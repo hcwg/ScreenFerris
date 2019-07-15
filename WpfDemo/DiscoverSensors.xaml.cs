@@ -38,7 +38,10 @@ namespace WpfDemo
 
         public void Update(DeviceInformationUpdate deviceInfoUpdate)
         {
+            Debug.WriteLine(String.Format("Before update: {0}", DeviceInformation.Name));
             DeviceInformation.Update(deviceInfoUpdate);
+            Debug.WriteLine(String.Format("After update: {0}", DeviceInformation.Name));
+
             OnPropertyChanged("Name");
             OnPropertyChanged("DeviceInformation");
         }
@@ -53,10 +56,12 @@ namespace WpfDemo
     public partial class MainWindow : Window
     {
         private DeviceWatcher deviceWatcher;
+        SFConfigStore configStore;
 
         public ObservableCollection<DeviceInfo> DeviceCollection { get; set; }
         public MainWindow()
         {
+            configStore = new SFConfigStore();
             DataContext = this;
             DeviceCollection = new ObservableCollection<DeviceInfo>();
             InitializeComponent();
@@ -115,6 +120,8 @@ namespace WpfDemo
         private void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
         {
             if (sender != deviceWatcher) { return; }
+            Debug.WriteLine(String.Format("Added {0}{1}", deviceInfoUpdate.Id, deviceInfoUpdate.Properties));
+
             DeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
             if (dev == null) { return; }
             dev.Update(deviceInfoUpdate);
@@ -124,12 +131,12 @@ namespace WpfDemo
             string id = deviceInfoUpdate.Id;
             Dispatcher.Invoke(() =>
             {
-                DeviceInfo dev  = FindDeviceInfoById(deviceInfoUpdate.Id);
+                DeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
                 if (dev != null)
                 {
                     DeviceCollection.Remove(dev);
                 }
-                
+
             });
         }
         private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object e)
@@ -158,6 +165,22 @@ namespace WpfDemo
         {
             StartScan();
         }
+        private void btnAddClick(object sender, RoutedEventArgs e)
+        {
+            DeviceInfo item = ScannedDevicesList.SelectedItem as DeviceInfo;
+            if (item == null)
+            {
+                return;
+            }
+            configStore.settings.sensors.Add(new BLEGravitySensors()
+            {
+                Id = item.DeviceId,
+                Name = item.DeviceName,
+            });
+            configStore.Save();
+
+        }
+
         #endregion
 
     }

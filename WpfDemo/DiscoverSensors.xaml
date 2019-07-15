@@ -7,7 +7,7 @@
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="" Height="722.176" Width="1094.613">
+        Title="Discover sensors" Height="543.176" Width="551.613">
     <Window.Resources>
         <DataTemplate x:Name="BluetoothDeviceItem" DataType="{x:Type local:DeviceInfo}">
 
@@ -18,8 +18,8 @@
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
-        <Button x:Name="btnStartScan" Content="Scan" HorizontalAlignment="Left" Margin="16,15,0,0" VerticalAlignment="Top" Width="183" Click="btnStartScanClick" Height="66" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
-        <ListView  x:Name="ScannedDevicesList" Height="636" Margin="220,5,5,0" VerticalAlignment="Top" ItemsSource="{Binding DeviceCollection}">
+        <Button x:Name="btnStartScan" Content="Scan" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Width="136" Click="btnStartScanClick" Height="49" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
+        <ListView  x:Name="ScannedDevicesList" Margin="165,5,5,10" ItemsSource="{Binding DeviceCollection}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:DeviceInfo}">
                     <StackPanel Orientation="Vertical" Height="54" Width="164">
@@ -43,6 +43,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button x:Name="btnAdd" Content="Add" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" Width="136" Click="btnAddClick" Height="49" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
 
     </Grid>
 </Window>
