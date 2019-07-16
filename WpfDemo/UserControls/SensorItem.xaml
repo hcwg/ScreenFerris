@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="WpfDemo.UserControls.SensorItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfDemo.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="88.795" d:DesignWidth="291.909">
+    <Grid>
+        <Label x:Name="sensorNameLabel" Content="{Binding Path=DeviceName}" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Top" Height="38" Width="146" FontSize="22" />
+
+    </Grid>
+</UserControl>

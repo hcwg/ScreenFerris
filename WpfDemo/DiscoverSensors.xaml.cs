@@ -53,13 +53,13 @@ namespace WpfDemo
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DiscoverSensorsWindow : Window
     {
         private DeviceWatcher deviceWatcher;
         SFConfigStore configStore;
 
         public ObservableCollection<DeviceInfo> DeviceCollection { get; set; }
-        public MainWindow()
+        public DiscoverSensorsWindow()
         {
             configStore = new SFConfigStore();
             DataContext = this;

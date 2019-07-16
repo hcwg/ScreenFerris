@@ -1,4 +1,4 @@
-﻿<Window x:Class="WpfDemo.MainWindow"
+﻿<Window x:Class="WpfDemo.DiscoverSensorsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,9 +10,7 @@
         Title="Discover sensors" Height="543.176" Width="551.613">
     <Window.Resources>
         <DataTemplate x:Name="BluetoothDeviceItem" DataType="{x:Type local:DeviceInfo}">
-
             <Label Content="{Binding DeviceId}"></Label>
-
         </DataTemplate>
     </Window.Resources>
     <Grid Margin="10">
