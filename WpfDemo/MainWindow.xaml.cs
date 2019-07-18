@@ -24,6 +24,7 @@ namespace WpfDemo
     {
         private App app;
         private SFConfigStore configStore;
+        public IBLEAccelerationSensor theSensor = new Sensors.TheSensor("BluetoothLE#BluetoothLE00:28:f8:fd:94:99-df:63:ad:c1:08:97", "The sensor");
 
         private ObservableCollection<SensorDisplay> SensorsCollection { get; set; }
         public MainWindow(App app, SFConfigStore configStore)
@@ -46,6 +47,19 @@ namespace WpfDemo
                 });
 
             }
+            theSensor.AutoConnect = true;
+            theSensor.PropertyChanged += (sender, e) =>
+            {
+                if (theSensor.Acceleration.HasValue)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        label.Content = theSensor.Acceleration.ToString();
+                    });
+                }
+                
+               
+            };
         }
 
         private void BtnQuit_Click(object sender, RoutedEventArgs e)

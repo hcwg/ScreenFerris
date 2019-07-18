@@ -7,16 +7,17 @@
         xmlns:models="clr-namespace:WpfDemo.Models"
         xmlns:controls="clr-namespace:WpfDemo.UserControls"
         mc:Ignorable="d"
-        Title="Screen Ferris" Height="450" Width="635">
-    <Grid Margin="0,0,0,-3" HorizontalAlignment="Left" Width="626">
-        <ListView x:Name="sensorsListView" Margin="10,16,391,41">
+        Title="Screen Ferris" Height="518" Width="635">
+    <Grid HorizontalAlignment="Left" Width="626" Margin="0,0,0,6">
+        <ListView x:Name="sensorsListView" Margin="10,16,391,48">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SensorDisplay}">
                     <controls:SensorItem DName="Test property"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Height="27" Margin="12,387,0,0" VerticalAlignment="Top" Width="49" Click="BtnQuit_Click"/>
+        <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="11,0,0,10" Width="55" Click="BtnQuit_Click" Height="28" VerticalAlignment="Bottom"/>
+        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="256,116,0,0" VerticalAlignment="Top" Height="30" Width="275"/>
 
     </Grid>
 </Window>
