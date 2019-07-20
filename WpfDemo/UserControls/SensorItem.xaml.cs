@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfDemo.Models;
 
 namespace WpfDemo.UserControls
 {
@@ -21,39 +21,10 @@ namespace WpfDemo.UserControls
     /// </summary>
     public partial class SensorItem : UserControl
     {
-        private SensorDisplay sensor;
-
-        public static DependencyProperty SeonsorProperty;
-        public static DependencyProperty DNameProperty;
-
-        static SensorItem()
-        {
-            SeonsorProperty = DependencyProperty.Register("Sensor", typeof(SensorDisplay), typeof(SensorItem));
-            DNameProperty = DependencyProperty.Register("DName", typeof(String), typeof(SensorItem));
-        }
+        public static DependencyProperty SensorProperty = DependencyProperty.Register("Sensor", typeof(IBLEAccelerationSensor), typeof(SensorItem));
         public SensorItem()
         {
             InitializeComponent();
         }
-        public SensorDisplay Sensor
-        {
-            get { return sensor; }
-            set
-            {
-                sensor = value;
-                Console.Write("FUCCCK" + sensor.DeviceName);
-                //sensorNameLabel.DataContext = sensor;
-            }
-        }
-
-        public String DName
-        {
-            set
-            {
-                SetValue(DNameProperty, value);
-                Console.WriteLine("FUCCCK" + value);
-            }
-        }
-
     }
 }

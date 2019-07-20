@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="WpfDemo.UserControls.SensorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfDemo.UserControls"
+             xmlns:sf="clr-namespace:WpfDemo"
+             mc:Ignorable="d" 
+             d:DesignHeight="307.438" d:DesignWidth="451.653">
+    <UserControl.Resources>
+        <local:Vector3ToStringConverter x:Key="Vector3ToStringConverter" />
+    </UserControl.Resources>
+
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="146*"/>
+        </Grid.RowDefinitions>
+        <Label Content="DeviceName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,3,0,0"  Width="83"/>
+        <Label  HorizontalAlignment="Left" Margin="110,3,0,0" VerticalAlignment="Top" Width="310" Height="25">
+            <TextBlock Text="{Binding Path=(sf:IBLEAccelerationSensor.DeviceName)}"/>
+        </Label>
+        <CheckBox x:Name="checkBoxAutoConnect" Content="AutoConnect" IsChecked="{Binding  Path=(sf:IBLEAccelerationSensor.AutoConnect), Mode=TwoWay}" HorizontalAlignment="Left" Margin="163,7,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.263,-0.138" Grid.Row="1" Height="15" Width="96"/>
+        <Label Content="Connected:" HorizontalAlignment="Left" Margin="15,3,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25"/>
+        <Label Content="{Binding Path=(sf:IBLEAccelerationSensor.Connected)}" HorizontalAlignment="Left" Margin="97,3,0,3" Grid.Row="1" Width="50"/>
+        <Label  Content="Accelaeration: " HorizontalAlignment="Left" Margin="15,2,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+        <Label  Content="{Binding Path=(sf:IBLEAccelerationSensor.Acceleration), Converter={StaticResource Vector3ToStringConverter}, Mode=OneWay}" Margin="111,3,21,0" Grid.Row="2" VerticalAlignment="Top" Height="25"/>
+    </Grid>
+</UserControl>

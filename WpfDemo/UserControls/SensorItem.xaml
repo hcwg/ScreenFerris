@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfDemo.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="88.795" d:DesignWidth="291.909">
+             d:DesignHeight="60" d:DesignWidth="200">
     <Grid>
-        <Label x:Name="sensorNameLabel" Content="{Binding Path=DeviceName}" HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Top" Height="38" Width="146" FontSize="22" />
-
+        <Label x:Name="sensorNameLabel"  HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Top" Height="38"  FontSize="22">
+            <TextBlock Text="{Binding Path=DeviceName}"/>
+        </Label>
     </Grid>
 </UserControl>

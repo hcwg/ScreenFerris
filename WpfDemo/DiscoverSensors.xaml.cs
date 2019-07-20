@@ -20,9 +20,9 @@ using System.ComponentModel;
 
 namespace WpfDemo
 {
-    public class DeviceInfo : INotifyPropertyChanged
+    public class ScanDeviceInfo : INotifyPropertyChanged
     {
-        public DeviceInfo(DeviceInformation deviceInfoIn)
+        public ScanDeviceInfo(DeviceInformation deviceInfoIn)
         {
             DeviceInformation = deviceInfoIn;
         }
@@ -56,14 +56,15 @@ namespace WpfDemo
     public partial class DiscoverSensorsWindow : Window
     {
         private DeviceWatcher deviceWatcher;
-        SFConfigStore configStore;
+        private App app;
+        //SFConfigStore configStore;
 
-        public ObservableCollection<DeviceInfo> DeviceCollection { get; set; }
-        public DiscoverSensorsWindow()
+        public ObservableCollection<ScanDeviceInfo> DeviceCollection { get; set; }
+        public DiscoverSensorsWindow(App app)
         {
-            configStore = new SFConfigStore();
+            this.app = app;
             DataContext = this;
-            DeviceCollection = new ObservableCollection<DeviceInfo>();
+            DeviceCollection = new ObservableCollection<ScanDeviceInfo>();
             InitializeComponent();
         }
 
@@ -114,7 +115,7 @@ namespace WpfDemo
             if (sender != deviceWatcher) { return; }
             Dispatcher.Invoke(() =>
             {
-                DeviceCollection.Add(new DeviceInfo(deviceInfo));
+                DeviceCollection.Add(new ScanDeviceInfo(deviceInfo));
             });
         }
         private void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
@@ -122,7 +123,7 @@ namespace WpfDemo
             if (sender != deviceWatcher) { return; }
             Debug.WriteLine(String.Format("Added {0}{1}", deviceInfoUpdate.Id, deviceInfoUpdate.Properties));
 
-            DeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
+            ScanDeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
             if (dev == null) { return; }
             dev.Update(deviceInfoUpdate);
         }
@@ -131,7 +132,7 @@ namespace WpfDemo
             string id = deviceInfoUpdate.Id;
             Dispatcher.Invoke(() =>
             {
-                DeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
+                ScanDeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
                 if (dev != null)
                 {
                     DeviceCollection.Remove(dev);
@@ -148,9 +149,9 @@ namespace WpfDemo
 
         }
 
-        private DeviceInfo FindDeviceInfoById(string id)
+        private ScanDeviceInfo FindDeviceInfoById(string id)
         {
-            foreach (DeviceInfo dev in DeviceCollection)
+            foreach (ScanDeviceInfo dev in DeviceCollection)
             {
                 if (dev.DeviceId == id)
                 {
@@ -167,21 +168,15 @@ namespace WpfDemo
         }
         private void btnAddClick(object sender, RoutedEventArgs e)
         {
-            DeviceInfo item = ScannedDevicesList.SelectedItem as DeviceInfo;
+            ScanDeviceInfo item = ScannedDevicesList.SelectedItem as ScanDeviceInfo;
             if (item == null)
             {
                 return;
             }
-            configStore.settings.sensors.Add(new BLEGravitySensors()
-            {
-                Id = item.DeviceId,
-                Name = item.DeviceName,
-            });
-            configStore.Save();
-
+            var sensor = new Sensors.TheSensor(item.DeviceId, item.DeviceName);
+            app.Sensors.Insert(0, sensor);
         }
 
         #endregion
-
     }
 }

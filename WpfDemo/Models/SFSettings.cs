@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace WpfDemo
 {
-    public class BLEGravitySensors
+    public class BLEGravitySensorsConfig
     {
         /// <summary>
         /// device id of BLE gravity sensors
@@ -38,11 +38,11 @@ namespace WpfDemo
     }
     public class SFSettings
     {
-        public List<BLEGravitySensors> sensors;
+        public List<BLEGravitySensorsConfig> sensors;
 
         public SFSettings()
         {
-            sensors = new List<BLEGravitySensors>();
+            sensors = new List<BLEGravitySensorsConfig>();
         }
     }
 }

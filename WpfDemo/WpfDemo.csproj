@@ -58,14 +58,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="IBLEAccSensor.cs" />
+    <Compile Include="Models\IBLEAccSensor.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\SensorsDisplay.cs" />
     <Compile Include="Sensors\TheSensor.cs" />
     <Compile Include="SFConfigStore.cs" />
-    <Compile Include="SFSettings.cs" />
+    <Compile Include="Models\SFSettings.cs" />
+    <Compile Include="UserControls\SensorControl.xaml.cs">
+      <DependentUpon>SensorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SensorItem.xaml.cs">
       <DependentUpon>SensorItem.xaml</DependentUpon>
     </Compile>
@@ -83,6 +85,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SensorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,12 +130,6 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoleDemo\ConsoleDemo.csproj">
-      <Project>{130A8BF2-6C3F-4C58-994D-8012DE80787A}</Project>
-      <Name>ConsoleDemo</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

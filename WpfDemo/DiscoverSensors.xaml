@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Discover sensors" Height="543.176" Width="551.613">
     <Window.Resources>
-        <DataTemplate x:Name="BluetoothDeviceItem" DataType="{x:Type local:DeviceInfo}">
+        <DataTemplate x:Name="BluetoothDeviceItem" DataType="{x:Type local:ScanDeviceInfo}">
             <Label Content="{Binding DeviceId}"></Label>
         </DataTemplate>
     </Window.Resources>
@@ -19,7 +19,7 @@
         <Button x:Name="btnStartScan" Content="Scan" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Width="136" Click="btnStartScanClick" Height="49" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
         <ListView  x:Name="ScannedDevicesList" Margin="165,5,5,10" ItemsSource="{Binding DeviceCollection}">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:DeviceInfo}">
+                <DataTemplate DataType="{x:Type local:ScanDeviceInfo}">
                     <StackPanel Orientation="Vertical" Height="54" Width="164">
                         <TextBlock Text="{Binding Path=DeviceName}" Style="{DynamicResource DeviceItemNameStyle}" >
                             <TextBlock.Resources>

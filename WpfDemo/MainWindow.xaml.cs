@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using WpfDemo.Models;
+using WpfDemo.UserControls;
 
 namespace WpfDemo
 {
@@ -23,48 +24,63 @@ namespace WpfDemo
     public partial class MainWindow : Window
     {
         private App app;
-        private SFConfigStore configStore;
-        public IBLEAccelerationSensor theSensor = new Sensors.TheSensor("BluetoothLE#BluetoothLE00:28:f8:fd:94:99-df:63:ad:c1:08:97", "The sensor");
 
-        private ObservableCollection<SensorDisplay> SensorsCollection { get; set; }
-        public MainWindow(App app, SFConfigStore configStore)
+        public ObservableCollection<IBLEAccelerationSensor> Sensors;
+        public MainWindow(App app)
         {
-            this.configStore = configStore;
             this.app = app;
-
-
-            SensorsCollection = new ObservableCollection<SensorDisplay>();
+            Sensors = app.Sensors;
 
             InitializeComponent();
 
-            sensorsListView.ItemsSource = SensorsCollection;
-
-            foreach (BLEGravitySensors sensor in configStore.settings.sensors)
-            {
-                SensorsCollection.Add(new SensorDisplay() {
-                    DeviceID = sensor.Id,
-                    DeviceName = sensor.Name,
-                });
-
-            }
-            theSensor.AutoConnect = true;
-            theSensor.PropertyChanged += (sender, e) =>
-            {
-                if (theSensor.Acceleration.HasValue)
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        label.Content = theSensor.Acceleration.ToString();
-                    });
-                }
-                
-               
-            };
+            sensorsListView.ItemsSource = Sensors;
         }
 
         private void BtnQuit_Click(object sender, RoutedEventArgs e)
         {
             app.Shutdown();
+        }
+
+        private void BtnPair_Click(object sender, RoutedEventArgs e)
+        {
+            app.discoverSensorsWindow.Show();
+        }
+
+        private void BtnRemove_Click(object sender, RoutedEventArgs e)
+        {
+            int newIndex = Math.Min(Sensors.Count - 2, sensorsListView.SelectedIndex);
+            Sensors.Remove(sensorsListView.SelectedItem as IBLEAccelerationSensor);
+            if (newIndex >= 0)
+            {
+                Dispatcher.Invoke(() => { sensorsListView.SelectedIndex = newIndex; });
+            }
+        }
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            app.SaveSettings();
+        }
+
+        private void SensorsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0) { return; }
+            var sensor = e.AddedItems[0] as IBLEAccelerationSensor;
+            SensorControl sensorControl = new SensorControl(sensor);
+            rightContent.Content = sensorControl;
+        }
+
+
+    }
+
+    public class SelectedToActiveConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value != null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
-namespace ConsoleDemo
+namespace WpfDemo
 {
     using System;
     using System.Net;

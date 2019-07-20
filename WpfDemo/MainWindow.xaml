@@ -4,20 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfDemo"
-        xmlns:models="clr-namespace:WpfDemo.Models"
         xmlns:controls="clr-namespace:WpfDemo.UserControls"
         mc:Ignorable="d"
-        Title="Screen Ferris" Height="518" Width="635">
-    <Grid HorizontalAlignment="Left" Width="626" Margin="0,0,0,6">
-        <ListView x:Name="sensorsListView" Margin="10,16,391,48">
+        Title="Screen Ferris" Height="518" Width="598">
+    <Window.Resources>
+        <local:SelectedToActiveConverter x:Key="SelectedToActiveConverter" />
+    </Window.Resources>
+    <Grid Margin="0,0,0,0">
+        <ListView x:Name="sensorsListView" Margin="10,16,0,50" SelectionChanged="SensorsListView_SelectionChanged" HorizontalAlignment="Left" Width="218">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:SensorDisplay}">
-                    <controls:SensorItem DName="Test property"/>
+                <DataTemplate DataType="{x:Type local:IBLEAccelerationSensor}">
+                    <controls:SensorItem />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <ContentControl x:Name="rightContent" Content="" Margin="255,16,10,19" />
         <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="11,0,0,10" Width="55" Click="BtnQuit_Click" Height="28" VerticalAlignment="Bottom"/>
-        <Label x:Name="label" Content="Label" HorizontalAlignment="Left" Margin="256,116,0,0" VerticalAlignment="Top" Height="30" Width="275"/>
+        <Button x:Name="btnPair" Content="Pair" HorizontalAlignment="Left" Margin="73,0,0,10" Width="55"  Height="28" VerticalAlignment="Bottom" Click="BtnPair_Click"/>
+        <Button x:Name="btnRemove" Content="Remove" HorizontalAlignment="Left" Margin="134,0,0,10" Width="60"  Height="28" VerticalAlignment="Bottom" Click="BtnRemove_Click" IsEnabled="{Binding ElementName=sensorsListView, Path=SelectedItem, Converter={StaticResource SelectedToActiveConverter}, Mode=OneWay}"/>
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="197,0,0,10" Width="57"  Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource SelectedToActiveConverter}, ElementName=sensorsListView, Mode=OneWay}"/>
 
     </Grid>
 </Window>

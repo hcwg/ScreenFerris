@@ -14,7 +14,7 @@ using Windows.Security.Cryptography;
 
 namespace WpfDemo.Sensors
 {
-    using Orientations = ConsoleDemo.Display.Orientations;
+    using Orientations = WpfDemo.Display.Orientations;
     public class TheSensor : IBLEAccelerationSensor
     {
         protected string deviceId;
@@ -75,17 +75,17 @@ namespace WpfDemo.Sensors
 
             }
         }
-        string IBLEAccelerationSensor.DeviceId
+        public string DeviceId
         {
             get => deviceId;
         }
 
-        string IBLEAccelerationSensor.DeviceName
+        public string DeviceName
         {
             get => deviceName;
         }
 
-        bool IBLEAccelerationSensor.AutoConnect
+        public bool AutoConnect
         {
             get => autoConnect;
             set
@@ -105,7 +105,7 @@ namespace WpfDemo.Sensors
             }
         }
 
-        bool IBLEAccelerationSensor.Connected
+        public bool Connected
         {
             get => connected;
         }
