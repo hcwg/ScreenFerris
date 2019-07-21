@@ -24,6 +24,7 @@ namespace WpfDemo.Sensors
         protected Task autoConnectTask;
         protected Vector3? baseline, normal;
         protected DateTime lastReport;
+        protected MonitorBinding monitorBinding;
 
         // BLE variable
         protected BluetoothLEDevice bluetoothLeDevice;
@@ -52,6 +53,8 @@ namespace WpfDemo.Sensors
             angle = null;
             orientation = null;
             shouldAutoConnectContinue = false;
+            monitorBinding = new MonitorBinding();
+            this.PropertyChanged += monitorBinding.SensorPropertyChangedEventHandler;
         }
 
         public Vector3? Baseline
@@ -126,6 +129,8 @@ namespace WpfDemo.Sensors
 
         public string MACAddress { get; set; }
         public DateTime LastReport { get => lastReport; }
+
+        public MonitorBinding Binding { get => monitorBinding; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

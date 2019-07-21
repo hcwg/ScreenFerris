@@ -35,6 +35,8 @@ namespace WpfDemo
 
         Display.Orientations? Orientation { get; }
 
+        MonitorBinding Binding { get; }
+
         //event AngleChangeHandler AngleChange;
         //event AccelerationChangeHandler AccelerationChange;
         //event OrientationChanged OrientationChanged;

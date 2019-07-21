@@ -87,9 +87,16 @@ namespace WpfDemo
 
             if (!NativeMethods.EnumDisplayDevices(null, DisplayNumber - 1, ref d, 0))
                 throw new ArgumentOutOfRangeException("DisplayNumber", DisplayNumber, "Number is greater than connected displays.");
+            return Rotate(d.DeviceName, Orientation);
+        }
+
+        public static bool Rotate(string DeviceName, Orientations Orientation)
+        {
+            bool result = false;
+            DEVMODE dm = new DEVMODE();
 
             if (0 != NativeMethods.EnumDisplaySettings(
-                d.DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS, ref dm))
+                DeviceName, NativeMethods.ENUM_CURRENT_SETTINGS, ref dm))
             {
                 if ((dm.dmDisplayOrientation + (int)Orientation) % 2 == 1) // Need to swap height and width?
                 {
@@ -117,7 +124,7 @@ namespace WpfDemo
                 }
 
                 DISP_CHANGE ret = NativeMethods.ChangeDisplaySettingsEx(
-                    d.DeviceName, ref dm, IntPtr.Zero,
+                    DeviceName, ref dm, IntPtr.Zero,
                     DisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
 
                 result = ret == 0;
