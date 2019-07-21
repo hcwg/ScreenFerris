@@ -65,11 +65,12 @@ namespace WpfDemo
             // Asume that the num is less than 10 at the first place
             uint devNum = 0;
             sucess = false;
-            Regex pattern = new Regex("(.+?)DISPLAY(//d)");
+            Regex pattern = new Regex("(.+?)DISPLAY(\\d+)");
             if (flag != 0)
             {
                 sucess = pattern.IsMatch(devName);
-                devNum = (uint)devName[11] - '0';
+                // devNum = (uint)devName[11] - '0';
+                devNum = UInt32.Parse(pattern.Match(devName).Groups[2].Value);
             }
             return devNum;
         }

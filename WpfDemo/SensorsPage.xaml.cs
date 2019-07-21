@@ -43,7 +43,9 @@ namespace WpfDemo
 
         private void BtnPair_Click(object sender, RoutedEventArgs e)
         {
-            app.discoverSensorsWindow.Show();
+            // app.discoverSensorsWindow.Show();
+            DiscoverSensorsWindow discoverSensorsWindow = new DiscoverSensorsWindow(app);
+            discoverSensorsWindow.Show();
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)

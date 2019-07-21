@@ -59,13 +59,7 @@ namespace WpfDemo
             Sensors.CollectionChanged += sensorCollectionChanged;
 
             // init windows
-            // mainWindow = new SensorsPage(this);
-            //discoverSensorsWindow = new DiscoverSensorsWindow(this);
-
-            // mainWindow.Show();
-
             HomeWindow homeWindow = new HomeWindow(this);
-
             homeWindow.Show();
 
         }
