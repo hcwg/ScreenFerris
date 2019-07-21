@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace WpfDemo
 
         string DeviceName { get; set; }
 
+        string MACAddress { get; }
+
         bool AutoConnect { get; set; }
 
         bool Connected { get;}
@@ -27,6 +30,7 @@ namespace WpfDemo
 
         Vector3? Acceleration { get; }
 
+        DateTime LastReport { get; }
         double? Angle { get; }
 
         Display.Orientations? Orientation { get; }

@@ -13,22 +13,30 @@
     </UserControl.Resources>
 
     <Grid x:Name="grid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="146*"/>
-        </Grid.RowDefinitions>
-        <Label Content="DeviceName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,3,0,0"  Width="83"/>
-        <Label  HorizontalAlignment="Left" Margin="110,3,0,0" VerticalAlignment="Top" Width="310" Height="25">
-            <TextBlock Text="{Binding Path=(sf:IBLEAccelerationSensor.DeviceName)}"/>
-        </Label>
-        <CheckBox x:Name="checkBoxAutoConnect" Content="AutoConnect" IsChecked="{Binding  Path=(sf:IBLEAccelerationSensor.AutoConnect), Mode=TwoWay}" HorizontalAlignment="Left" Margin="163,7,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.263,-0.138" Grid.Row="1" Height="15" Width="96"/>
-        <Label Content="Connected:" HorizontalAlignment="Left" Margin="15,3,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25"/>
-        <Label Content="{Binding Path=(sf:IBLEAccelerationSensor.Connected)}" HorizontalAlignment="Left" Margin="97,3,0,3" Grid.Row="1" Width="50"/>
-        <Label  Content="Accelaeration: " HorizontalAlignment="Left" Margin="15,2,0,0" Grid.Row="2" VerticalAlignment="Top"/>
-        <Label  Content="{Binding Path=(sf:IBLEAccelerationSensor.Acceleration), Converter={StaticResource Vector3ToStringConverter}, Mode=OneWay}" Margin="111,3,21,0" Grid.Row="2" VerticalAlignment="Top" Height="25"/>
-        <local:CalibrationInfo HorizontalAlignment="Left" Margin="15,3,0,0" Grid.Row="3" VerticalAlignment="Top"/>
-        <Button x:Name="buttonCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="20,59,0,0" Grid.Row="3" VerticalAlignment="Top" Width="71" Click="ButtonCalibrate_Click"/>
+        <StackPanel x:Name="stackPanelMain" Orientation="Vertical">
+            <StackPanel  Orientation="Horizontal" Margin="10,0">
+                <Label Content="DeviceName" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <Label  HorizontalAlignment="Left" VerticalAlignment="Top" Height="25">
+                    <TextBlock Text="{Binding DeviceName}"/>
+                </Label>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" Margin="10,0">
+                <Label Content="MacAddress:" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
+                <TextBlock Text="{Binding MACAddress}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="116"/>
+            </StackPanel>
+            <StackPanel Margin="10,0" Orientation="Horizontal" >
+                <Label Content="Connected:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Label Content="{Binding Connected}" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="50"/>
+                <CheckBox x:Name="checkBoxAutoConnect" Content="AutoConnect" IsChecked="{Binding AutoConnect, Mode=TwoWay}" HorizontalAlignment="Left"  VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Margin="10,0" Orientation="Horizontal" >
+                <Label  Content="Accelaeration: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label  Content="{Binding Acceleration, Converter={StaticResource Vector3ToStringConverter}, Mode=OneWay}" Margin="0,1,0,0" VerticalAlignment="Top" Height="25" Width="320"/>
+            </StackPanel>
+            <StackPanel Margin="10,0" Orientation="Vertical" >
+                <local:CalibrationInfo HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Button x:Name="buttonCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="71" Click="ButtonCalibrate_Click"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

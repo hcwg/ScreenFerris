@@ -26,8 +26,20 @@ namespace WpfDemo
             }
             this.configurFilePath = configurFilePath;
             settings = Load(this.configurFilePath) as SFSettings;
+            SettingsSanityCheck();
         }
 
+        void SettingsSanityCheck()
+        {
+            if (settings == null)
+            {
+                settings = new SFSettings();
+            }
+            if (settings.sensors == null)
+            {
+                settings.sensors = new List<BLEGravitySensorConfig>();
+            }
+        }
 
         object Load(string filePath)
         {

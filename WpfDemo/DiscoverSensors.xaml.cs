@@ -17,6 +17,7 @@ using Windows.Devices.Bluetooth;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 
 namespace WpfDemo
 {
@@ -173,7 +174,10 @@ namespace WpfDemo
             {
                 return;
             }
-            var sensor = new Sensors.TheSensor(item.DeviceId, item.DeviceName);
+            var sensor = new Sensors.TheSensor(item.DeviceId, item.DeviceName) {
+                MACAddress = item.DeviceMAC,
+                // PhysicalAddress.Parse(item.DeviceMAC.Replace(':', '-').ToUpper())
+            };
             app.Sensors.Insert(0, sensor);
         }
 

@@ -27,7 +27,7 @@ namespace WpfDemo.UserControls
         {
             InitializeComponent();
             this.sensor = sensor;
-            grid.DataContext = sensor;
+            stackPanelMain.DataContext = sensor;
         }
 
         private void ButtonCalibrate_Click(object sender, RoutedEventArgs e)

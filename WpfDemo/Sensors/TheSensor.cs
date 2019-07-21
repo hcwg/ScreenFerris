@@ -14,6 +14,7 @@ using Windows.Security.Cryptography;
 
 namespace WpfDemo.Sensors
 {
+    using System.Net.NetworkInformation;
     using Orientations = WpfDemo.Display.Orientations;
     public class TheSensor : IBLEAccelerationSensor
     {
@@ -22,6 +23,7 @@ namespace WpfDemo.Sensors
         protected bool autoConnect;
         protected Task autoConnectTask;
         protected Vector3? baseline, normal;
+        protected DateTime lastReport;
 
         // BLE variable
         protected BluetoothLEDevice bluetoothLeDevice;
@@ -122,6 +124,9 @@ namespace WpfDemo.Sensors
 
         public Orientations? Orientation { get => orientation; }
 
+        public string MACAddress { get; set; }
+        public DateTime LastReport { get => lastReport; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -209,6 +214,9 @@ namespace WpfDemo.Sensors
         }
         protected void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
+            lastReport = DateTime.Now;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
+
             byte[] data;
             CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out data); ;
             if (System.BitConverter.IsLittleEndian)
@@ -304,7 +312,8 @@ namespace WpfDemo.Sensors
             {
                 if (!connected)
                 {
-                    if (await ConnectToSensor())
+                    var task = ConnectToSensor();
+                    if (await task)
                     {
                         connected = true;
                         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));

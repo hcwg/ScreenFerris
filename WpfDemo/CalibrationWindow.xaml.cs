@@ -62,7 +62,6 @@ namespace WpfDemo
 
                 default: break;
 
-
             }
         }
     }

@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace WpfDemo
 {
-    public class BLEGravitySensorsConfig
+    public class BLEGravitySensorConfig
     {
         /// <summary>
         /// device id of BLE gravity sensors
@@ -18,6 +18,11 @@ namespace WpfDemo
         /// User friendly name
         /// </summary>
         public string Name;
+
+        /// <summary>
+        /// MAC address;
+        /// </summary>
+        public string MACAddress;
 
         /// <summary>
         /// Baseline vector point to the top of monitor
@@ -38,11 +43,11 @@ namespace WpfDemo
     }
     public class SFSettings
     {
-        public List<BLEGravitySensorsConfig> sensors;
+        public List<BLEGravitySensorConfig> sensors;
 
         public SFSettings()
         {
-            sensors = new List<BLEGravitySensorsConfig>();
+            sensors = new List<BLEGravitySensorConfig>();
         }
     }
 }
