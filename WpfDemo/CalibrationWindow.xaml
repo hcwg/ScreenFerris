@@ -1,0 +1,30 @@
+﻿<Window x:Class="WpfDemo.CalibrationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfDemo"
+        xmlns:controls="clr-namespace:WpfDemo.UserControls"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Calibration" Height="400" Width="400">
+    <Window.Resources>
+        <sys:String x:Key="strCalibrationInstruction">
+            Calibration yor sensor.
+        </sys:String>
+    </Window.Resources>
+    <Grid>
+        <Button x:Name="buttonConfirm" Margin="100,100,100,100" Click="ButtonConfirm_Click" >
+            <Button.Content>
+                <TextBlock x:Name="textBlockButton" TextWrapping="Wrap">Step 1: rorate your monitor <Bold>landscape</Bold> and click this button.</TextBlock>
+            </Button.Content>
+        </Button>
+        <TextBlock x:Name="textBlockInstruction" Margin="14,10,11,0" TextWrapping="Wrap"  VerticalAlignment="Top" Height="62">
+            Calibration yor sensor. Please <Bold>fix</Bold> your sensor anywhere on the screen. And then rotate your monitor to <Bold>Landscape</Bold> to perpare caliberating.
+        </TextBlock>
+        <GroupBox x:Name="groupBoxCalibrationInfo" Header="Calibration Data " Margin="10,0,13,8" Height="83" VerticalAlignment="Bottom">
+            <controls:CalibrationInfo/>
+        </GroupBox>
+
+    </Grid>
+</Window>

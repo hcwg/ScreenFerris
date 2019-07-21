@@ -40,7 +40,10 @@ namespace WpfDemo
             bleSensors = new ObservableCollection<IBLEAccelerationSensor>();
             foreach (BLEGravitySensorsConfig sensorRecord in configStore.settings.sensors)
             {
-                IBLEAccelerationSensor sensor = new Sensors.TheSensor(sensorRecord.Id, sensorRecord.Name);
+                var sensor = new Sensors.TheSensor(sensorRecord.Id, sensorRecord.Name);
+                sensor.Baseline = sensorRecord.Baseline;
+                sensor.Normal = sensorRecord.Normal;
+                
                 bleSensorsDict[sensorRecord.Id] = sensor;
                 bleSensors.Add(sensor);
             }

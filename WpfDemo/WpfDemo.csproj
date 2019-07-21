@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CalibrationWindow.xaml.cs">
+      <DependentUpon>CalibrationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\IBLEAccSensor.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -65,12 +68,20 @@
     <Compile Include="Sensors\TheSensor.cs" />
     <Compile Include="SFConfigStore.cs" />
     <Compile Include="Models\SFSettings.cs" />
+    <Compile Include="UserControls\CalibrationInfo.xaml.cs">
+      <DependentUpon>CalibrationInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SensorControl.xaml.cs">
       <DependentUpon>SensorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\SensorItem.xaml.cs">
       <DependentUpon>SensorItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters.cs" />
+    <Page Include="CalibrationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DiscoverSensors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -85,6 +96,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CalibrationInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

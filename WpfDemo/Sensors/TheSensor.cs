@@ -83,6 +83,12 @@ namespace WpfDemo.Sensors
         public string DeviceName
         {
             get => deviceName;
+            set
+            {
+                deviceName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeviceName"));
+
+            }
         }
 
         public bool AutoConnect

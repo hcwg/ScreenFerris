@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfDemo.UserControls"
+             xmlns:conv="clr-namespace:WpfDemo.ValueConverters"
              xmlns:sf="clr-namespace:WpfDemo"
              mc:Ignorable="d" 
              d:DesignHeight="307.438" d:DesignWidth="451.653">
     <UserControl.Resources>
-        <local:Vector3ToStringConverter x:Key="Vector3ToStringConverter" />
+        <conv:Vector3ToStringConverter x:Key="Vector3ToStringConverter" />
     </UserControl.Resources>
 
     <Grid x:Name="grid">
@@ -27,5 +28,7 @@
         <Label Content="{Binding Path=(sf:IBLEAccelerationSensor.Connected)}" HorizontalAlignment="Left" Margin="97,3,0,3" Grid.Row="1" Width="50"/>
         <Label  Content="Accelaeration: " HorizontalAlignment="Left" Margin="15,2,0,0" Grid.Row="2" VerticalAlignment="Top"/>
         <Label  Content="{Binding Path=(sf:IBLEAccelerationSensor.Acceleration), Converter={StaticResource Vector3ToStringConverter}, Mode=OneWay}" Margin="111,3,21,0" Grid.Row="2" VerticalAlignment="Top" Height="25"/>
+        <local:CalibrationInfo HorizontalAlignment="Left" Margin="15,3,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+        <Button x:Name="buttonCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="20,59,0,0" Grid.Row="3" VerticalAlignment="Top" Width="71" Click="ButtonCalibrate_Click"/>
     </Grid>
 </UserControl>

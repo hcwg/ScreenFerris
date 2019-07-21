@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="WpfDemo.UserControls.CalibrationInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfDemo.UserControls"
+             xmlns:conv="clr-namespace:WpfDemo.ValueConverters"
+             mc:Ignorable="d" 
+             d:DesignHeight="58.283" d:DesignWidth="219.434">
+    <UserControl.Resources>
+        <conv:Vector3ToStringConverter x:Key="Vector3ToStringConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Label x:Name="label" Content="Baseline:" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Normal:" HorizontalAlignment="Left" Margin="0,28,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="75,10,0,0" TextWrapping="Wrap" Text="{Binding Path=Baseline, Converter={StaticResource Vector3ToStringConverter }}" VerticalAlignment="Top" RenderTransformOrigin="0.811,0.574"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" Margin="76,33,0,0" TextWrapping="Wrap" Text="{Binding Path=Normal, Converter={StaticResource Vector3ToStringConverter }}" VerticalAlignment="Top"/>
+
+    </Grid>
+</UserControl>

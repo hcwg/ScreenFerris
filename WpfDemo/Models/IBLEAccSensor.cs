@@ -15,11 +15,15 @@ namespace WpfDemo
     {
         string DeviceId { get;}
 
-        string DeviceName { get; }
+        string DeviceName { get; set; }
 
         bool AutoConnect { get; set; }
 
         bool Connected { get;}
+
+        Vector3? Baseline { get; }
+
+        Vector3? Normal { get; }
 
         Vector3? Acceleration { get; }
 
