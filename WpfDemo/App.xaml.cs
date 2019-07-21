@@ -55,7 +55,7 @@ namespace WpfDemo
 
             // mainWindow.Show();
 
-            HomeWindow homeWindow = new HomeWindow();
+            HomeWindow homeWindow = new HomeWindow(this);
 
             homeWindow.Show();
 

@@ -19,14 +19,21 @@ namespace WpfDemo
     /// </summary>
     public partial class HomeWindow : Window
     {
-        public HomeWindow()
+        private App app;
+        public HomeWindow(App app)
         {
+            this.app = app;
             InitializeComponent();
         }
         private void BtnManual_Click(object sender, RoutedEventArgs e)
         {
+             //TODO: navigate from sensor page
              ManualPage manualPage = new ManualPage();
              this.Content = manualPage;
+        }
+        private void BtnSensor_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Change to sensor setting page
         }
     }
 }

@@ -8,6 +8,6 @@
         Title="HomeWindow" Height="450" Width="800">
     <Grid>
         <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="BtnManual_Click">Manual Settings</Button>
-        <Button Margin="10,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom">Diaplay Sensors</Button>
+        <Button Margin="10,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="BtnSensor_Click">Diaplay Sensors</Button>
     </Grid>
 </Window>

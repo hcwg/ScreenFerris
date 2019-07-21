@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -23,7 +24,6 @@ namespace WpfDemo
     public partial class ManualPage : Page
     {
         public ObservableCollection<string> deviceListFound = new ObservableCollection<string>();
-        bool flag_buttonScan = false;
         public ManualPage()
         {
             InitializeComponent();
@@ -44,6 +44,11 @@ namespace WpfDemo
         {
             // Save custumer's choice to config
         }
+        
+        private void BtnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            // Quit the app
+        }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             // Go back to window from a page
@@ -53,6 +58,10 @@ namespace WpfDemo
             if (e.AddedItems.Count == 0) { return; }
             string monitorString = (string)e.AddedItems[0];
             // Save it
+        }
+        private void hotkeyChangeForRight(object sender, DataGridViewRowDividerDoubleClickEventArgs e)
+        {
+
         }
 
     }
