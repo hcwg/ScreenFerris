@@ -10,6 +10,8 @@
              d:DesignHeight="307.438" d:DesignWidth="451.653">
     <UserControl.Resources>
         <conv:Vector3ToStringConverter x:Key="Vector3ToStringConverter" />
+        <conv:RadToDegConverter x:Key="RadToDegConverter" />
+
     </UserControl.Resources>
 
     <Grid x:Name="grid">
@@ -35,7 +37,15 @@
             </StackPanel>
             <StackPanel Margin="10,0" Orientation="Vertical" >
                 <local:CalibrationInfo HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <Button x:Name="buttonCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="71" Click="ButtonCalibrate_Click"/>
+                <Button x:Name="buttonCalibrate" Content="Calibrate" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="94" Click="ButtonCalibrate_Click"/>
+            </StackPanel>
+            <StackPanel Margin="10,0" Orientation="Horizontal" >
+                <Label  Content="Angle: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="{Binding Angle, Converter={StaticResource RadToDegConverter}}"/>
+            </StackPanel>
+            <StackPanel Margin="10,0" Orientation="Horizontal" >
+                <Label  Content="Orentitation: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="{Binding Orientation}" />
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfDemo"
         xmlns:controls="clr-namespace:WpfDemo.UserControls"
         mc:Ignorable="d"
-        Title="Screen Ferris" Height="518" Width="598">
+        Height="Auto" Width="Auto" d:DesignWidth="548" d:DesignHeight="338.6">
     <Page.Resources>
         <local:SelectedToActiveConverter x:Key="SelectedToActiveConverter" />
     </Page.Resources>
@@ -19,10 +19,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <ContentControl x:Name="rightContent" Content="" Margin="255,16,10,19" />
-        <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="11,0,0,10" Width="55" Click="BtnQuit_Click" Height="28" VerticalAlignment="Bottom"/>
-        <Button x:Name="btnPair" Content="Pair" HorizontalAlignment="Left" Margin="73,0,0,10" Width="55"  Height="28" VerticalAlignment="Bottom" Click="BtnPair_Click"/>
-        <Button x:Name="btnRemove" Content="Remove" HorizontalAlignment="Left" Margin="134,0,0,10" Width="60"  Height="28" VerticalAlignment="Bottom" Click="BtnRemove_Click" IsEnabled="{Binding ElementName=sensorsListView, Path=SelectedItem, Converter={StaticResource SelectedToActiveConverter}, Mode=OneWay}"/>
-        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="197,0,0,10" Width="57"  Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" IsEnabled="{Binding SelectedItem, Converter={StaticResource SelectedToActiveConverter}, ElementName=sensorsListView, Mode=OneWay}"/>
+        <Button x:Name="btnRemove" Content="Remove" HorizontalAlignment="Left" Margin="12,0,0,9" Width="82"  Height="28" VerticalAlignment="Bottom" Click="BtnRemove_Click" IsEnabled="{Binding ElementName=sensorsListView, Path=SelectedItem, Converter={StaticResource SelectedToActiveConverter}, Mode=OneWay}"/>
 
     </Grid>
 </Page>

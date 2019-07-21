@@ -54,17 +54,18 @@ namespace WpfDemo
     /// <summary>
     /// Interaction logic for SensorsPage.xaml
     /// </summary>
-    public partial class DiscoverSensorsWindow : Window
+    public partial class AddSensorPage : Page
     {
         private DeviceWatcher deviceWatcher;
         private App app;
+        private Window window;
         //SFConfigStore configStore;
 
         public ObservableCollection<ScanDeviceInfo> DeviceCollection { get; set; }
-        public DiscoverSensorsWindow(App app)
+        public AddSensorPage(App app, Window window)
         {
             this.app = app;
-            DataContext = this;
+            this.window = window;
             DeviceCollection = new ObservableCollection<ScanDeviceInfo>();
             InitializeComponent();
         }
@@ -114,7 +115,7 @@ namespace WpfDemo
         {
             Debug.WriteLine(String.Format("Added {0}{1}", deviceInfo.Id, deviceInfo.Name));
             if (sender != deviceWatcher) { return; }
-            Dispatcher.Invoke(() =>
+            window.Dispatcher.Invoke(() =>
             {
                 DeviceCollection.Add(new ScanDeviceInfo(deviceInfo));
             });
@@ -131,7 +132,7 @@ namespace WpfDemo
         private void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
         {
             string id = deviceInfoUpdate.Id;
-            Dispatcher.Invoke(() =>
+            window.Dispatcher.Invoke(() =>
             {
                 ScanDeviceInfo dev = FindDeviceInfoById(deviceInfoUpdate.Id);
                 if (dev != null)

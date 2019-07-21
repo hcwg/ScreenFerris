@@ -65,11 +65,11 @@
     <Compile Include="HomeWindow.xaml.cs">
       <DependentUpon>HomeWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ManualPage.xaml.cs">
+    <Compile Include="Pages\ManualPage.xaml.cs">
       <DependentUpon>ManualPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IBLEAccSensor.cs" />
-    <Compile Include="SensorsPage.xaml.cs">
+    <Compile Include="Pages\SensorsPage.xaml.cs">
       <DependentUpon>SensorsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sensors\TheSensor.cs" />
@@ -89,7 +89,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DiscoverSensors.xaml">
+    <Page Include="Pages\AddSensorPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -97,19 +97,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DiscoverSensors.xaml.cs">
-      <DependentUpon>DiscoverSensors.xaml</DependentUpon>
+    <Compile Include="Pages\AddSensorPage.xaml.cs">
+      <DependentUpon>AddSensorPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="HomeWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SensorsPage.xaml">
+    <Page Include="Pages\SensorsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ManualPage.xaml">
+    <Page Include="Pages\ManualPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -153,6 +153,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MahApps.Metro">
+      <Version>1.6.5</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
       <Version>10.0.17763.1000-preview</Version>
     </PackageReference>

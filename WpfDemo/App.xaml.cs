@@ -17,8 +17,9 @@ namespace WpfDemo
     /// </summary>
     public partial class App : Application
     {
+        
         public SensorsPage mainWindow { get; private set; }
-        public DiscoverSensorsWindow discoverSensorsWindow { get; private set; }
+        public AddSensorPage discoverSensorsWindow { get; private set; }
 
         public ObservableCollection<IBLEAccelerationSensor> Sensors
         {
@@ -30,6 +31,10 @@ namespace WpfDemo
 
         private SFConfigStore configStore;
 
+        public App()
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

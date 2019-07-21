@@ -4,10 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfDemo"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+
         mc:Ignorable="d"
         Title="HomeWindow" Height="450" Width="800">
     <Grid>
-        <Button Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="BtnManual_Click">Manual Settings</Button>
-        <Button Margin="10,0,0,40" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="BtnSensor_Click">Diaplay Sensors</Button>
+        <Grid.RowDefinitions>
+     
+        </Grid.RowDefinitions>
+        <Controls:MetroAnimatedSingleRowTabControl Margin="0,0,0,41">
+            <Controls:MetroTabItem Header="Sensors">
+                <Frame x:Name="SensorsFrame"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+            </Controls:MetroTabItem>
+            <Controls:MetroTabItem Header="Manual">
+                <Frame x:Name="ManualFrame" Margin="0,0,0,31"/>
+            </Controls:MetroTabItem>
+            <Controls:MetroTabItem Header="Add Sensor">
+                <Frame x:Name="AddSensorFrame"/>
+            </Controls:MetroTabItem>
+
+
+        </Controls:MetroAnimatedSingleRowTabControl>
+        <StackPanel Margin="0,0,0,8" Orientation="Horizontal" Height="30" VerticalAlignment="Bottom" Grid.RowSpan="2" HorizontalAlignment="Right" Width="160">
+            <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="10,0,0,0" Click="BtnQuit_Click" Height="28" VerticalAlignment="Bottom" Width="60" />
+            <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left"  Margin="10,0,0,0" Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" Width="60"/>
+        </StackPanel>
+
+
+
     </Grid>
 </Window>

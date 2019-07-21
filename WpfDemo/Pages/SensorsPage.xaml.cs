@@ -36,17 +36,7 @@ namespace WpfDemo
             sensorsListView.ItemsSource = Sensors;
         }
 
-        private void BtnQuit_Click(object sender, RoutedEventArgs e)
-        {
-            app.Shutdown();
-        }
-
-        private void BtnPair_Click(object sender, RoutedEventArgs e)
-        {
-            // app.discoverSensorsWindow.Show();
-            DiscoverSensorsWindow discoverSensorsWindow = new DiscoverSensorsWindow(app);
-            discoverSensorsWindow.Show();
-        }
+   
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
@@ -57,10 +47,7 @@ namespace WpfDemo
                 Dispatcher.Invoke(() => { sensorsListView.SelectedIndex = newIndex; });
             }
         }
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
-        {
-            app.SaveSettings();
-        }
+
 
         private void SensorsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

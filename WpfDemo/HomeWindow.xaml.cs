@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,18 +25,17 @@ namespace WpfDemo
         {
             this.app = app;
             InitializeComponent();
+            SensorsFrame.Content = new SensorsPage(app);
+            ManualFrame.Content = new ManualPage();
+            AddSensorFrame.Content = new AddSensorPage(app, this);
         }
-        private void BtnManual_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-             //TODO: navigate from sensor page
-             ManualPage manualPage = new ManualPage();
-             this.Content = manualPage;
+            app.SaveSettings();
         }
-        private void BtnSensor_Click(object sender, RoutedEventArgs e)
+        private void BtnQuit_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Change to sensor setting page
-            SensorsPage sensorsPage = new SensorsPage(app);
-            this.Content = sensorsPage;
+            app.Shutdown();
         }
     }
 }
