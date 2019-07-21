@@ -61,6 +61,13 @@
     <Compile Include="CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Display.cs" />
+    <Compile Include="HomeWindow.xaml.cs">
+      <DependentUpon>HomeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ManualPage.xaml.cs">
+      <DependentUpon>ManualPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\IBLEAccSensor.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -90,14 +97,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Display.cs" />
     <Compile Include="DiscoverSensors.xaml.cs">
       <DependentUpon>DiscoverSensors.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="HomeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ManualPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\CalibrationInfo.xaml">
       <SubType>Designer</SubType>
@@ -145,6 +159,12 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imgs\arrayDown.png" />
+    <Resource Include="Imgs\arrayLeft.png" />
+    <Resource Include="Imgs\arrayRight.png" />
+    <Resource Include="Imgs\arrayUp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

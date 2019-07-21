@@ -50,10 +50,14 @@ namespace WpfDemo
             Sensors.CollectionChanged += sensorCollectionChanged;
 
             // init windows
-            mainWindow = new MainWindow(this);
-            discoverSensorsWindow = new DiscoverSensorsWindow(this);
+            // mainWindow = new MainWindow(this);
+            //discoverSensorsWindow = new DiscoverSensorsWindow(this);
 
-            mainWindow.Show();
+            // mainWindow.Show();
+
+            HomeWindow homeWindow = new HomeWindow();
+
+            homeWindow.Show();
 
         }
         public IBLEAccelerationSensor GetSensorById(string deviceId)

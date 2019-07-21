@@ -1,0 +1,53 @@
+﻿<Page x:Class="WpfDemo.ManualPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfDemo"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ManualPage">
+
+    <Grid>
+        <Label Margin="50,10,0,0">Monitors connected</Label>
+        <ListView x:Name="monitorsListView" Margin="10,45,0,55" HorizontalAlignment="Left" Width="244" Height="350">
+        </ListView>
+        <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="11,0,0,10" Width="55" Height="28" VerticalAlignment="Bottom"/>
+        <Button x:Name="btnScan" Content="Scan" HorizontalAlignment="Left" Margin="73,0,0,10" Width="55"  Height="28" VerticalAlignment="Bottom" Click="BtnScan_Click"/>
+        <Button x:Name="btnBack" Content="Back" HorizontalAlignment="Left" Margin="134,0,0,10" Width="60"  Height="28" VerticalAlignment="Bottom" Click="BtnBack_Click" />
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="197,0,0,10" Width="57"  Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" />
+        <StackPanel Margin="255,16,10,300">
+            <TextBlock Margin="0,50,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Please select a monitor as default rotate monitor" ></TextBlock>
+            <ComboBox x:Name="deviceList" Height="20" Width="200" HorizontalAlignment="Center" Margin="0,10,0,0" SelectionChanged="MonitorChosed_SelectionChanged" >
+            </ComboBox>
+        </StackPanel>
+        
+        <Grid Margin="300,200,10,100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="80" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label HorizontalAlignment="Center">Default hotkey setting</Label>
+            <Image Source="/Imgs/arrayRight.png" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center"
+                   Height="80" Width="80"></Image>
+            <Image Source="/Imgs/arrayDown.png" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"
+                   Height="80" Width="80"></Image>
+            <Image Source="/Imgs/arrayLeft.png" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center"
+                   Height="80" Width="80"></Image>
+            <Image Source="/Imgs/arrayUp.png" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center"
+                   Height="80" Width="80"></Image>
+            <Label Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Ctrl+Right (Origin)</Label>
+            <Label Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Ctrl+Down</Label>
+            <Label Grid.Column="2" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Ctrl+Left</Label>
+            <Label Grid.Column="3" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Ctrl+Up</Label>
+        </Grid>
+            
+    </Grid>
+</Page>

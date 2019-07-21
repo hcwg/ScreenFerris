@@ -21,9 +21,17 @@ namespace WpfDemo
             DEGREES_CW_270 = 1
         }
 
-        public static List<uint> FindDevNumList()
+        public class MonitorInfo
         {
-            List<uint> devNumList = new List<uint>();
+            internal string deviceKey { get; set; }
+            internal string deviceString { get; set; }
+            internal string deviceName { get; set; }
+            internal string deviceID { get; set; }
+        }
+
+        public static Dictionary<uint, MonitorInfo> FindDevNumList()
+        {
+            Dictionary<uint, MonitorInfo> devDic = new Dictionary<uint, MonitorInfo>();
             for (uint devNum = 0; ; devNum++)
             {
                 DISPLAY_DEVICE d = new DISPLAY_DEVICE();
@@ -31,7 +39,7 @@ namespace WpfDemo
                 d.cb = Marshal.SizeOf(d);
                 if (!NativeMethods.EnumDisplayDevices(null, devNum, ref d, 0))
                 {
-                    return devNumList;
+                    return devDic;
                 }
                 if (d.StateFlags != 0)
                 {
@@ -39,7 +47,11 @@ namespace WpfDemo
                     // Try to resolve the monitor index from device name
                     // Index start at 1
                     uint thisDevNum = ResolveDevNum(d.DeviceName, d.StateFlags, out bool sucess);
-                    devNumList.Add(thisDevNum);
+                    devDic[thisDevNum] = new MonitorInfo();
+                    devDic[thisDevNum].deviceID = d.DeviceID;
+                    devDic[thisDevNum].deviceKey = d.DeviceKey;
+                    devDic[thisDevNum].deviceName = d.DeviceName;
+                    devDic[thisDevNum].deviceString = d.DeviceString;
                 }
                 else
                 {
