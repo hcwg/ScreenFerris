@@ -19,14 +19,14 @@ namespace WpfDemo
 {
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SensorsPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SensorsPage : Page
     {
         private App app;
 
         public ObservableCollection<IBLEAccelerationSensor> Sensors;
-        public MainWindow(App app)
+        public SensorsPage(App app)
         {
             this.app = app;
             Sensors = app.Sensors;

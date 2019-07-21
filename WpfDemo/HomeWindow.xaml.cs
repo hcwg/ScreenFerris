@@ -34,6 +34,8 @@ namespace WpfDemo
         private void BtnSensor_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Change to sensor setting page
+            SensorsPage sensorsPage = new SensorsPage(app);
+            this.Content = sensorsPage;
         }
     }
 }

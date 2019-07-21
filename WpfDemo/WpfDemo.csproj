@@ -69,8 +69,8 @@
       <DependentUpon>ManualPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IBLEAccSensor.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="SensorsPage.xaml.cs">
+      <DependentUpon>SensorsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sensors\TheSensor.cs" />
     <Compile Include="SFConfigStore.cs" />
@@ -105,7 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="SensorsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

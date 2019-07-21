@@ -17,7 +17,7 @@ namespace WpfDemo
     /// </summary>
     public partial class App : Application
     {
-        public MainWindow mainWindow { get; private set; }
+        public SensorsPage mainWindow { get; private set; }
         public DiscoverSensorsWindow discoverSensorsWindow { get; private set; }
 
         public ObservableCollection<IBLEAccelerationSensor> Sensors
@@ -59,7 +59,7 @@ namespace WpfDemo
             Sensors.CollectionChanged += sensorCollectionChanged;
 
             // init windows
-            // mainWindow = new MainWindow(this);
+            // mainWindow = new SensorsPage(this);
             //discoverSensorsWindow = new DiscoverSensorsWindow(this);
 
             // mainWindow.Show();

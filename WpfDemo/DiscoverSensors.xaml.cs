@@ -52,7 +52,7 @@ namespace WpfDemo
         }
     }
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SensorsPage.xaml
     /// </summary>
     public partial class DiscoverSensorsWindow : Window
     {
