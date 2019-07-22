@@ -27,8 +27,9 @@ namespace WpfDemo.Sensors
         protected MonitorBinding monitorBinding;
 
         // BLE variable
-        protected BluetoothLEDevice bluetoothLeDevice;
-        GattCharacteristic selectedCharacteristic = null;
+        protected BluetoothLEDevice bluetoothLEDevice;
+        protected GattDeviceService selectedService;
+        protected GattCharacteristic subscribedCharacteristic = null;
 
 
         // Sensor status
@@ -40,8 +41,8 @@ namespace WpfDemo.Sensors
         // 
         protected bool shouldAutoConnectContinue;
 
-        const string serviceUuid = "6a800001-b5a3-f393-e0a9-e50e24dcca9e";
-        const string characteristicUuid = "6a806050-b5a3-f393-e0a9-e50e24dcca9e";
+        readonly Guid serviceUuid = new Guid("6a800001-b5a3-f393-e0a9-e50e24dcca9e");
+        readonly Guid characteristicUuid = new Guid("6a806050-b5a3-f393-e0a9-e50e24dcca9e");
 
 
         public TheSensor(string deviceId, string deviceName)
@@ -111,14 +112,26 @@ namespace WpfDemo.Sensors
                     DisableAutoConnect();
 
                 }
+                bool changed = value != autoConnect;
                 autoConnect = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect"));
+                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect")); }
+
             }
         }
 
         public bool Connected
         {
             get => connected;
+            private set
+            {
+                bool changed = value != connected;
+                connected = value;
+                if (!connected)
+                {
+                    CleanUpSubscription();
+                }
+                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected")); }
+            }
         }
 
         public Vector3? Acceleration { get => acceleration; }
@@ -128,7 +141,16 @@ namespace WpfDemo.Sensors
         public Orientations? Orientation { get => orientation; }
 
         public string MACAddress { get; set; }
-        public DateTime LastReport { get => lastReport; }
+        public DateTime LastReport
+        {
+            get => lastReport;
+            private set
+            {
+                lastReport = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
+            }
+        }
+
 
         public MonitorBinding Binding { get => monitorBinding; }
 
@@ -136,60 +158,82 @@ namespace WpfDemo.Sensors
 
 
         #region logic code
-
+        protected void bluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
+        {
+            if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
+            {
+                Connected = false;
+                sender.ConnectionStatusChanged -= bluetoothLeDeviceConnectionStatusChanged;
+            }
+        }
         protected async Task<bool> ConnectToSensor()
         {
-            bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
-            GattDeviceServicesResult servicesResult = await bluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+            if (bluetoothLEDevice == null)
+            {
+                bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
+                bluetoothLEDevice.ConnectionStatusChanged += bluetoothLeDeviceConnectionStatusChanged;
+            }
+
+            GattDeviceServicesResult servicesResult = await bluetoothLEDevice.GetGattServicesForUuidAsync(serviceUuid);
             if (servicesResult.Status != GattCommunicationStatus.Success)
             {
                 Debug.WriteLine("GetGattServicesAsync Error");
                 Debug.WriteLine(servicesResult.ProtocolError.ToString());
                 return false;
             }
+            if (servicesResult.Services.Count == 0)
+            {
+                Debug.WriteLine("Can not get service.");
+                return false;
+            }
+            if (selectedService != null)
+            {
+                selectedService.Dispose();
+            }
+            selectedService = servicesResult.Services[0];
+
             IReadOnlyList<GattCharacteristic> characteristics = null;
-            foreach (GattDeviceService service in servicesResult.Services)
+
+
+            Debug.WriteLine(selectedService.Uuid);
+
+            DeviceAccessStatus accessStatus = await selectedService.RequestAccessAsync();
+            if (accessStatus == DeviceAccessStatus.Allowed)
             {
-                Debug.WriteLine(service.Uuid);
-                if (service.Uuid.ToString() == serviceUuid)
+                var result = await selectedService.GetCharacteristicsForUuidAsync(characteristicUuid);
+                if (result.Status == GattCommunicationStatus.Success)
                 {
-                    var accessStatus = await service.RequestAccessAsync();
-                    if (accessStatus == DeviceAccessStatus.Allowed)
-                    {
-                        var result = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
-                        if (result.Status == GattCommunicationStatus.Success)
-                        {
-                            characteristics = result.Characteristics;
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Error accessing service.");
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine("ERROR RequestAccessAsync");
-                        Debug.WriteLine(accessStatus.ToString());
-                        return false;
-                    }
+                    characteristics = result.Characteristics;
+                }
+                else
+                {
+                    Debug.WriteLine("Error accessing service " + result.Status + ".");
+                    return false;
                 }
             }
+            else
+            {
+                Debug.WriteLine("ERROR RequestAccessAsync");
+                Debug.WriteLine(accessStatus.ToString());
+                return false;
+            }
+
+
             Debug.WriteLine("Successful get service");
-            selectedCharacteristic = null;
-            foreach (GattCharacteristic c in characteristics)
-            {
-                if (c.Uuid.ToString() == characteristicUuid)
-                {
-                    selectedCharacteristic = c;
-                }
-            }
-            if (selectedCharacteristic == null)
+            if (characteristics.Count == 0)
             {
                 Debug.WriteLine("Characteristic not found.");
                 return false;
             }
+            GattCharacteristic selectedCharacteristic = characteristics[0];
 
+            GattCommunicationStatus disableNotificationstatus =
+                await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
+            if (disableNotificationstatus != GattCommunicationStatus.Success)
+            {
+                Debug.WriteLine("Error clearing registering for value changes: " + disableNotificationstatus);
+                return false;
+            }
             // Enable notify
             var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.None;
             if (selectedCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
@@ -212,7 +256,8 @@ namespace WpfDemo.Sensors
                 Debug.WriteLine("Error registering for value changes: " + status);
                 return false;
             }
-            selectedCharacteristic.ValueChanged += Characteristic_ValueChanged;
+            subscribedCharacteristic = selectedCharacteristic;
+            subscribedCharacteristic.ValueChanged += Characteristic_ValueChanged;
 
             return true;
 
@@ -315,14 +360,27 @@ namespace WpfDemo.Sensors
             Debug.WriteLine(String.Format("Enabling atuoconnect on {0}", deviceId));
             while (shouldAutoConnectContinue)
             {
-                if (!connected)
+                if (DateTime.Now - LastReport > new TimeSpan(hours: 0, minutes: 0, seconds: 30))
+                {
+                    Connected = false;
+                }
+                if (!Connected)
                 {
                     var task = ConnectToSensor();
-                    if (await task)
+                    try
                     {
-                        connected = true;
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
+                        if (await task)
+                        {
+                            Connected = true;
+                        }
+
                     }
+                    catch (Exception e)
+                    {
+                        Debugger.Break();
+                    }
+
+                    lastReport = DateTime.Now; // W
                 }
                 Thread.Sleep(5000);
             }
@@ -339,6 +397,33 @@ namespace WpfDemo.Sensors
                 shouldAutoConnectContinue = false;
             }
 
+        }
+        protected void CleanUpSubscription()
+        {
+            if (subscribedCharacteristic != null)
+            {
+                subscribedCharacteristic.ValueChanged -= Characteristic_ValueChanged;
+                subscribedCharacteristic = null;
+             
+                Debug.WriteLine("Cleanup Subscription");
+            }
+            if (selectedService != null)
+            {
+                selectedService.Session.Dispose();
+                selectedService.Dispose();
+                selectedService = null;
+            }
+            if (bluetoothLEDevice != null)
+            {
+                bluetoothLEDevice.Dispose();
+                bluetoothLEDevice = null;
+            }
+        }
+
+        public void Disconnect()
+        {
+            this.AutoConnect = false;
+            CleanUpSubscription();
         }
         #endregion
     }

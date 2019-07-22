@@ -37,6 +37,8 @@ namespace WpfDemo
 
         MonitorBinding Binding { get; }
 
+        void Disconnect();
+
         //event AngleChangeHandler AngleChange;
         //event AccelerationChangeHandler AccelerationChange;
         //event OrientationChanged OrientationChanged;

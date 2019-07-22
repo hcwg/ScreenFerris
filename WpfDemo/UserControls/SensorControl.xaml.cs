@@ -49,6 +49,11 @@ namespace WpfDemo.UserControls
                 monitorDeviceNames.Add(devDic[devNum].deviceName);
             }
         }
+
+        private void BtnDisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            sensor.Disconnect();
+        }
     }
 
    

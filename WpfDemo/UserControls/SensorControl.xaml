@@ -29,7 +29,8 @@
             <StackPanel Margin="10,0" Orientation="Horizontal" >
                 <Label Content="Connected:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Label Content="{Binding Connected}" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="50"/>
-                <CheckBox x:Name="checkBoxAutoConnect" Content="AutoConnect" IsChecked="{Binding AutoConnect, Mode=TwoWay}" HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                <CheckBox x:Name="checkBoxAutoConnect" Content="AutoConnect" IsChecked="{Binding AutoConnect, Mode=TwoWay}" HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="10,0,0,0" />
+                <Button x:Name="btnDisconnect" Content="Disconnect" Click="BtnDisconnect_Click" Margin="10,0,0,0"/>
             </StackPanel>
             <StackPanel Margin="10,0" Orientation="Horizontal" >
                 <Label  Content="Accelaeration: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
