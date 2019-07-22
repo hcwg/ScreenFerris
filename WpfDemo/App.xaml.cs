@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Windows.Phone.ApplicationModel;
 
 namespace WpfDemo
 {
@@ -17,7 +18,7 @@ namespace WpfDemo
     /// </summary>
     public partial class App : Application
     {
-        
+
         public SensorsPage mainWindow { get; private set; }
         public AddSensorPage discoverSensorsWindow { get; private set; }
 
@@ -30,6 +31,9 @@ namespace WpfDemo
         private Dictionary<string, IBLEAccelerationSensor> bleSensorsDict;
 
         private SFConfigStore configStore;
+
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private HomeWindow homeWindow;
 
         public App()
         {
@@ -62,12 +66,27 @@ namespace WpfDemo
                 bleSensors.Add(sensor);
             }
             Sensors.CollectionChanged += sensorCollectionChanged;
+            //init tray icon
+
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Icon = WpfDemo.Properties.Resources.ScreenFerrisIcon;
+            notifyIcon.Visible = true;
+            notifyIcon.DoubleClick += delegate (object sender, EventArgs args)
+                {
+                    ShowHomeWindow();
+                };
+            notifyIcon.ContextMenu = GetContextMenu();
 
             // init windows
             HomeWindow homeWindow = new HomeWindow(this);
             homeWindow.Show();
 
         }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            notifyIcon.Visible = false;
+        }
+
         public IBLEAccelerationSensor GetSensorById(string deviceId)
         {
             return bleSensorsDict[deviceId];
@@ -142,6 +161,25 @@ namespace WpfDemo
         public void SaveSettings()
         {
             configStore.Save();
+        }
+        public void ShowHomeWindow()
+        {
+            if (homeWindow == null)
+            {
+                homeWindow = new HomeWindow(this);
+            }
+            homeWindow.Show();
+        }
+        public void SetHomeWindowNull()
+        {
+            homeWindow = null;
+        }
+        private System.Windows.Forms.ContextMenu GetContextMenu()
+        {
+            System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();
+            var itemExit = new System.Windows.Forms.MenuItem("Exit", (object sender, EventArgs e) => { Shutdown(); });
+            menu.MenuItems.Add(itemExit);
+            return menu;
         }
     }
 }

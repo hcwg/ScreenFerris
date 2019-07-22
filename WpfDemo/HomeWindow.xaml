@@ -5,16 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfDemo"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-
         mc:Ignorable="d"
-        Title="HomeWindow" Height="450" Width="800">
+        Title="ScreenFerris" Height="478.947" Width="784.211">
     <Grid>
         <Grid.RowDefinitions>
-     
+
         </Grid.RowDefinitions>
         <Controls:MetroAnimatedSingleRowTabControl Margin="0,0,0,41">
             <Controls:MetroTabItem Header="Sensors">
-                <Frame x:Name="SensorsFrame"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                <Frame x:Name="SensorsFrame"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
             </Controls:MetroTabItem>
             <Controls:MetroTabItem Header="Manual">
                 <Frame x:Name="ManualFrame" Margin="0,0,0,31"/>

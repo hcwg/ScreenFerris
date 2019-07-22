@@ -37,5 +37,13 @@ namespace WpfDemo
         {
             app.Shutdown();
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            app.SetHomeWindowNull();
+            base.OnClosed(e);
+        }
+
+      
     }
 }

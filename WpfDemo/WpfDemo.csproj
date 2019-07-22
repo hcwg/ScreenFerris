@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ScreenFerris.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -72,6 +75,11 @@
     <Compile Include="Models\IBLEAccSensor.cs" />
     <Compile Include="Pages\SensorsPage.xaml.cs">
       <DependentUpon>SensorsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Sensors\TheSensor.cs" />
     <Compile Include="SFConfigStore.cs" />
@@ -131,11 +139,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -169,6 +172,15 @@
     <Resource Include="Imgs\arrayLeft.png" />
     <Resource Include="Imgs\arrayRight.png" />
     <Resource Include="Imgs\arrayUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Imgs\ScreenFerris.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ScreenFerris.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
