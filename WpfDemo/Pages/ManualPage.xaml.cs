@@ -27,31 +27,12 @@ namespace WpfDemo
         public ManualPage()
         {
             InitializeComponent();
-        }
-        
-        private void BtnScan_Click(object sender, RoutedEventArgs e)
-        {
             Dictionary<uint, Display.MonitorInfo> devDic = Display.FindDevNumList();
             foreach (uint devNum in devDic.Keys)
             {
-                this.monitorsListView.Items.Add(devDic[devNum].deviceString);
-                deviceListFound.Add(devDic[devNum].deviceString);
+                deviceListFound.Add(devDic[devNum].deviceName);
             }
             deviceList.ItemsSource = deviceListFound;
-        }
-
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
-        {
-            // Save custumer's choice to config
-        }
-        
-        private void BtnQuit_Click(object sender, RoutedEventArgs e)
-        {
-            // Quit the app
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            // Go back to window from a page
         }
         private void MonitorChosed_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
