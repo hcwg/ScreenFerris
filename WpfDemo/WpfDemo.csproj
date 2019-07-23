@@ -73,6 +73,7 @@
       <DependentUpon>HomeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\MonitorBinding.cs" />
+    <Compile Include="Models\ShortcutBinding.cs" />
     <Compile Include="Pages\ManualPage.xaml.cs">
       <DependentUpon>ManualPage.xaml</DependentUpon>
     </Compile>
@@ -96,6 +97,9 @@
     </Compile>
     <Compile Include="UserControls\SensorItem.xaml.cs">
       <DependentUpon>SensorItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ShortcutEdit.xaml.cs">
+      <DependentUpon>ShortcutEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueConverters.cs" />
     <Page Include="CalibrationWindow.xaml">
@@ -135,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SensorItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ShortcutEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

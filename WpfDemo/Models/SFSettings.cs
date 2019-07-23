@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace WpfDemo
 {
@@ -41,6 +42,20 @@ namespace WpfDemo
         public string BindedMonitor;
 
     }
+    public class SFShortcutConfig
+    {
+        public string Clockwise_0;
+        public string Clockwise_90;
+        public string Clockwise_180;
+        public string Clockwise_270;
+    }
+    public class SFManualSettings
+    {
+        public string BindedMonitor;
+
+
+    }
+   
     public class SFSettings
     {
         public List<BLEGravitySensorConfig> sensors;
@@ -48,6 +63,10 @@ namespace WpfDemo
         public SFSettings()
         {
             sensors = new List<BLEGravitySensorConfig>();
+        }
+        public static SFSettings GetDefault()
+        {
+            return new SFSettings();
         }
     }
 }

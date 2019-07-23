@@ -32,6 +32,7 @@ namespace WpfDemo.UserControls
             this.sensor = sensor;
             stackPanelMain.DataContext = sensor;
             comboBindMonitor.ItemsSource = monitorDeviceNames;
+            RefreshDisplays();
         }
 
         private void ButtonCalibrate_Click(object sender, RoutedEventArgs e)
@@ -42,12 +43,7 @@ namespace WpfDemo.UserControls
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<uint, Display.MonitorInfo> devDic = Display.FindDevNumList();
-            monitorDeviceNames.Clear();
-            foreach (uint devNum in devDic.Keys)
-            {
-                monitorDeviceNames.Add(devDic[devNum].deviceName);
-            }
+            RefreshDisplays();
         }
 
         private void BtnDisconnect_Click(object sender, RoutedEventArgs e)
@@ -58,6 +54,15 @@ namespace WpfDemo.UserControls
         private void BtnClearBind_Click(object sender, RoutedEventArgs e)
         {
             sensor.Binding.MonitorDeviceName = "";
+        }
+        private void RefreshDisplays()
+        {
+            Dictionary<uint, Display.MonitorInfo> devDic = Display.FindDevNumList();
+            monitorDeviceNames.Clear();
+            foreach (uint devNum in devDic.Keys)
+            {
+                monitorDeviceNames.Add(devDic[devNum].deviceName);
+            }
         }
     }
 

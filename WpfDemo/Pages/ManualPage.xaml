@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfDemo"
+      xmlns:controls="clr-namespace:WpfDemo.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ManualPage">
@@ -15,7 +16,29 @@
             <Label Margin="50,40,0,0" Height="Auto" Width="330" HorizontalAlignment="Left">Default hotkey setting</Label>
         </StackPanel>
 
-        <Grid Margin="60,185,160,0">
+        <StackPanel Margin="60,185,160,0" Orientation="Vertical">
+            <StackPanel Height="60" Orientation="Horizontal">
+                <Image Source="/Imgs/arrayUp.png" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Height="Auto" Width="Auto" ></Image>
+                <controls:ShortcutEdit />
+            </StackPanel>
+            <StackPanel Height="60" Orientation="Horizontal">
+                <Image Source="/Imgs/arrayRight.png" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Height="Auto" Width="Auto" ></Image>
+                <controls:ShortcutEdit />
+            </StackPanel>
+            <StackPanel Height="60" Orientation="Horizontal">
+                <Image Source="/Imgs/arrayLeft.png" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Height="Auto" Width="Auto" ></Image>
+                <controls:ShortcutEdit />
+            </StackPanel>
+            <StackPanel Height="60" Orientation="Horizontal">
+                <Image Source="/Imgs/arrayDown.png" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Height="Auto" Width="Auto" ></Image>
+                <controls:ShortcutEdit />
+            </StackPanel>
+        </StackPanel>
+        <Grid Margin="60,185,160,0" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="500"/>
