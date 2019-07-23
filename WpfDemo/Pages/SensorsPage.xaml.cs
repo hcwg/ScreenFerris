@@ -34,6 +34,10 @@ namespace WpfDemo
             InitializeComponent();
 
             sensorsListView.ItemsSource = Sensors;
+            if (Sensors.Count > 0)
+            {
+                sensorsListView.SelectedIndex = 0;
+            }
         }
 
    

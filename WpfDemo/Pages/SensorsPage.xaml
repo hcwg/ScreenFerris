@@ -11,6 +11,9 @@
         <local:SelectedToActiveConverter x:Key="SelectedToActiveConverter" />
     </Page.Resources>
     <Grid Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <ListView x:Name="sensorsListView" Margin="10,16,0,50" SelectionChanged="SensorsListView_SelectionChanged" HorizontalAlignment="Left" Width="218">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:IBLEAccelerationSensor}">
@@ -18,7 +21,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ContentControl x:Name="rightContent" Content="" Margin="255,16,10,19" />
+        <ContentControl x:Name="rightContent" Content="" Margin="251,16,10,19" />
         <Button x:Name="btnRemove" Content="Remove" HorizontalAlignment="Left" Margin="12,0,0,9" Width="82"  Height="28" VerticalAlignment="Bottom" Click="BtnRemove_Click" IsEnabled="{Binding ElementName=sensorsListView, Path=SelectedItem, Converter={StaticResource SelectedToActiveConverter}, Mode=OneWay}"/>
 
     </Grid>

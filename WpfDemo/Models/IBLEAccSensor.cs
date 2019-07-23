@@ -12,6 +12,12 @@ namespace WpfDemo
     public delegate void AngleChangeHandler(IBLEAccelerationSensor sender, double angle);
     public delegate void AccelerationChangeHandler(IBLEAccelerationSensor sender, Vector3 acceleration);
     public delegate void OrientationChanged(IBLEAccelerationSensor sender, Display.Orientations orientation);
+    public enum BLESensorConnectionStatus {
+        Connected,
+        NotConnected,
+        Connecting,
+        Error,
+    }
     public interface IBLEAccelerationSensor : INotifyPropertyChanged
     {
         string DeviceId { get;}
@@ -36,6 +42,8 @@ namespace WpfDemo
         Display.Orientations? Orientation { get; }
 
         MonitorBinding Binding { get; }
+
+        BLESensorConnectionStatus ConnectionStatus { get; }
 
         void Disconnect();
 

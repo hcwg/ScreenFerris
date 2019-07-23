@@ -41,6 +41,8 @@ namespace WpfDemo.Sensors
         // 
         protected bool shouldAutoConnectContinue;
 
+        BLESensorConnectionStatus connectionStatus;
+
         readonly Guid serviceUuid = new Guid("6a800001-b5a3-f393-e0a9-e50e24dcca9e");
         readonly Guid characteristicUuid = new Guid("6a806050-b5a3-f393-e0a9-e50e24dcca9e");
 
@@ -56,6 +58,7 @@ namespace WpfDemo.Sensors
             shouldAutoConnectContinue = false;
             monitorBinding = new MonitorBinding();
             this.PropertyChanged += monitorBinding.SensorPropertyChangedEventHandler;
+            connectionStatus = BLESensorConnectionStatus.NotConnected;
         }
 
         public Vector3? Baseline
@@ -131,6 +134,13 @@ namespace WpfDemo.Sensors
                     CleanUpSubscription();
                 }
                 if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected")); }
+                if (connected)
+                {
+                    ConnectionStatus = BLESensorConnectionStatus.Connected;
+                } else
+                {
+                    ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                }
             }
         }
 
@@ -153,6 +163,18 @@ namespace WpfDemo.Sensors
 
 
         public MonitorBinding Binding { get => monitorBinding; }
+
+        public BLESensorConnectionStatus ConnectionStatus
+        {
+            get => connectionStatus;
+            private set
+            {
+                bool changed = value != connectionStatus;
+                connectionStatus = value;
+                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionStatus")); }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -366,6 +388,7 @@ namespace WpfDemo.Sensors
                 }
                 if (!Connected)
                 {
+                    ConnectionStatus = BLESensorConnectionStatus.Connecting;
                     var task = ConnectToSensor();
                     try
                     {
@@ -379,7 +402,10 @@ namespace WpfDemo.Sensors
                     {
                         Debugger.Break();
                     }
-
+                    if (!Connected)
+                    {
+                        ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                    }
                     lastReport = DateTime.Now; // W
                 }
                 Thread.Sleep(5000);

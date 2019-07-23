@@ -9,7 +9,17 @@ namespace WpfDemo
 {
     public class MonitorBinding : INotifyPropertyChanged
     {
-        public string MonitorDeviceName { get; set; }
+        private string monitorDeviceName;
+
+        public string MonitorDeviceName
+        {
+            get => monitorDeviceName;
+            set
+            {
+                monitorDeviceName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MonitorDeviceName"));
+            }
+        }
 
         public bool Enabled { get; set; }
 

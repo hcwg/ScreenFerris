@@ -54,6 +54,11 @@ namespace WpfDemo.UserControls
         {
             sensor.Disconnect();
         }
+
+        private void BtnClearBind_Click(object sender, RoutedEventArgs e)
+        {
+            sensor.Binding.MonitorDeviceName = "";
+        }
     }
 
    

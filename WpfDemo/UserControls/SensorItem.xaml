@@ -4,11 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfDemo.UserControls"
+             xmlns:conv="clr-namespace:WpfDemo.ValueConverters"
              mc:Ignorable="d" 
              d:DesignHeight="60" d:DesignWidth="200">
+    <UserControl.Resources>
+        <conv:ConnectionStatusToColorConverter x:Key="ConnectionStatusToColorConverter" />
+    </UserControl.Resources>
     <Grid>
-        <Label x:Name="sensorNameLabel"  HorizontalAlignment="Left" Margin="0,-2,0,0" VerticalAlignment="Top" Height="38"  FontSize="22">
+        <Label x:Name="sensorNameLabel"  HorizontalAlignment="Left" Margin="33,0,0,0" VerticalAlignment="Top" Height="38"  FontSize="22">
             <TextBlock Text="{Binding Path=DeviceName}"/>
         </Label>
+        <Ellipse x:Name="ellipseConnectionStatus" HorizontalAlignment="Left" Height="14" Margin="7,12,0,0" VerticalAlignment="Top" Width="14"  Fill="{Binding Path=ConnectionStatus, Converter={StaticResource ConnectionStatusToColorConverter}}" Stroke="Black"/>
     </Grid>
 </UserControl>

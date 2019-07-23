@@ -6,6 +6,9 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Shapes;
+
 
 namespace WpfDemo.ValueConverters
 {
@@ -44,6 +47,34 @@ namespace WpfDemo.ValueConverters
                 return String.Format("{0:0.000}", rad.Value / 2 / Math.PI * 360);
             }
             return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ConnectionStatusToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+
+
+            if (value is BLESensorConnectionStatus)
+            {
+                BLESensorConnectionStatus? status = value as BLESensorConnectionStatus?;
+                switch (status.Value)
+                {
+                    case BLESensorConnectionStatus.Connected:
+                        return new SolidColorBrush(Color.FromRgb(80, 220, 80));
+                    case BLESensorConnectionStatus.NotConnected:
+                        return new SolidColorBrush(Color.FromRgb(220, 80, 80));
+                    case BLESensorConnectionStatus.Connecting:
+                        return new SolidColorBrush(Color.FromRgb(255, 128, 80));
+                }
+            }
+            return new SolidColorBrush(Color.FromRgb(180, 180, 180));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
