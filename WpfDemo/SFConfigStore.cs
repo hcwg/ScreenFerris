@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,16 +9,33 @@ using System.Threading.Tasks;
 
 namespace WpfDemo
 {
-    public class SFConfigStore
+    public class SFConfigStore : INotifyPropertyChanged
     {
         public SFSettings settings;
+        public bool Modified
+        {
+            get => modified; set
+            {
+                if (value != modified)
+                {
+                    modified = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Modified"));
+                }
+            }
+        }
+        private bool modified;
         private readonly string configurFilePath;
+
+
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
             //ContractResolver = new SettingsReaderContractResolver(),
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public SFConfigStore(String configurFilePath = null)
         {
             if (configurFilePath == null)
@@ -26,6 +44,7 @@ namespace WpfDemo
             }
             this.configurFilePath = configurFilePath;
             settings = Load(this.configurFilePath) as SFSettings;
+            Modified = false;
             SettingsSanityCheck();
         }
 
@@ -59,6 +78,7 @@ namespace WpfDemo
         public void Save()
         {
             File.WriteAllText(configurFilePath, Serialize());
+            Modified = false;
         }
 
     }

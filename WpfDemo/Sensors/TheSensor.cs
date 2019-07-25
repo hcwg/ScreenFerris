@@ -14,6 +14,7 @@ using Windows.Security.Cryptography;
 
 namespace WpfDemo.Sensors
 {
+    using ControlzEx.Standard;
     using System.Net.NetworkInformation;
     using Orientations = WpfDemo.Display.Orientations;
     public class TheSensor : IBLEAccelerationSensor
@@ -23,8 +24,9 @@ namespace WpfDemo.Sensors
         protected bool autoConnect;
         protected Task autoConnectTask;
         protected Vector3? baseline, normal;
-        protected DateTime lastReport;
+        protected DateTime lastReport, lastConnected;
         protected MonitorBinding monitorBinding;
+        protected string statusMessage;
 
         // BLE variable
         protected BluetoothLEDevice bluetoothLEDevice;
@@ -58,6 +60,7 @@ namespace WpfDemo.Sensors
             shouldAutoConnectContinue = false;
             monitorBinding = new MonitorBinding();
             this.PropertyChanged += monitorBinding.SensorPropertyChangedEventHandler;
+            monitorBinding.PropertyChanged += MonitorBindingPropertyChanged;
             connectionStatus = BLESensorConnectionStatus.NotConnected;
         }
 
@@ -127,19 +130,22 @@ namespace WpfDemo.Sensors
             get => connected;
             private set
             {
-                bool changed = value != connected;
-                connected = value;
-                if (!connected)
+                if (value != connected)
                 {
-                    CleanUpSubscription();
-                }
-                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected")); }
-                if (connected)
-                {
-                    ConnectionStatus = BLESensorConnectionStatus.Connected;
-                } else
-                {
-                    ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                    connected = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
+                    if (!connected)
+                    {
+                        CleanUpSubscription();
+                    }
+                    if (connected)
+                    {
+                        ConnectionStatus = BLESensorConnectionStatus.Connected;
+                    }
+                    else
+                    {
+                        ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                    }
                 }
             }
         }
@@ -175,6 +181,18 @@ namespace WpfDemo.Sensors
             }
         }
 
+        public string StatusMessage
+        {
+            get => statusMessage;
+            set {
+                if (value != statusMessage)
+                {
+                    statusMessage = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StatusMessage"));
+                }
+                Debug.WriteLine(value);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -190,6 +208,7 @@ namespace WpfDemo.Sensors
         }
         protected async Task<bool> ConnectToSensor()
         {
+            StatusMessage = "Connecting" + DeviceId;
             if (bluetoothLEDevice == null)
             {
                 bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
@@ -199,13 +218,12 @@ namespace WpfDemo.Sensors
             GattDeviceServicesResult servicesResult = await bluetoothLEDevice.GetGattServicesForUuidAsync(serviceUuid);
             if (servicesResult.Status != GattCommunicationStatus.Success)
             {
-                Debug.WriteLine("GetGattServicesAsync Error");
-                Debug.WriteLine(servicesResult.ProtocolError.ToString());
+                StatusMessage = "GetGattServicesAsync Error:" + servicesResult.ProtocolError.ToString();
                 return false;
             }
             if (servicesResult.Services.Count == 0)
             {
-                Debug.WriteLine("Can not get service.");
+                StatusMessage = "Can not get service.";
                 return false;
             }
             if (selectedService != null)
@@ -217,7 +235,7 @@ namespace WpfDemo.Sensors
             IReadOnlyList<GattCharacteristic> characteristics = null;
 
 
-            Debug.WriteLine(selectedService.Uuid);
+            StatusMessage = "Successfully conecte to service: " + selectedService.Uuid.ToString();
 
             DeviceAccessStatus accessStatus = await selectedService.RequestAccessAsync();
             if (accessStatus == DeviceAccessStatus.Allowed)
@@ -229,22 +247,20 @@ namespace WpfDemo.Sensors
                 }
                 else
                 {
-                    Debug.WriteLine("Error accessing service " + result.Status + ".");
+                    StatusMessage = "Error accessing service " + result.Status + ".";
                     return false;
                 }
             }
             else
             {
-                Debug.WriteLine("ERROR RequestAccessAsync");
-                Debug.WriteLine(accessStatus.ToString());
+                StatusMessage = "ERROR RequestAccessAsync: " + accessStatus.ToString();
                 return false;
             }
 
 
-            Debug.WriteLine("Successful get service");
             if (characteristics.Count == 0)
             {
-                Debug.WriteLine("Characteristic not found.");
+                StatusMessage = "Characteristic not found.";
                 return false;
             }
             GattCharacteristic selectedCharacteristic = characteristics[0];
@@ -253,7 +269,7 @@ namespace WpfDemo.Sensors
                 await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
             if (disableNotificationstatus != GattCommunicationStatus.Success)
             {
-                Debug.WriteLine("Error clearing registering for value changes: " + disableNotificationstatus);
+                StatusMessage = "Error clearing registering for value changes: " + disableNotificationstatus;
                 return false;
             }
             // Enable notify
@@ -268,25 +284,29 @@ namespace WpfDemo.Sensors
             }
             else
             {
-                Debug.WriteLine("Characteristic doesn't support Indicate or Notify");
+                StatusMessage = "Characteristic doesn't support Indicate or Notify";
                 return false;
             }
-            Debug.WriteLine("Enable notify");
             GattCommunicationStatus status = await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
             if (status != GattCommunicationStatus.Success)
             {
-                Debug.WriteLine("Error registering for value changes: " + status);
+                StatusMessage = "Error registering for value changes: " + status;
                 return false;
             }
+            StatusMessage = "Notify enabled";
             subscribedCharacteristic = selectedCharacteristic;
             subscribedCharacteristic.ValueChanged += Characteristic_ValueChanged;
 
             return true;
 
         }
+        private void MonitorBindingPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BindMonitor"));
+        }
         protected void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            lastReport = DateTime.Now;
+            LastReport = DateTime.Now;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
 
             byte[] data;
@@ -382,7 +402,8 @@ namespace WpfDemo.Sensors
             Debug.WriteLine(String.Format("Enabling atuoconnect on {0}", deviceId));
             while (shouldAutoConnectContinue)
             {
-                if (DateTime.Now - LastReport > new TimeSpan(hours: 0, minutes: 0, seconds: 30))
+                var timeoutDeadline = DateTime.Now - new TimeSpan(hours: 0, minutes: 0, seconds: 30);
+                if (lastReport < timeoutDeadline && lastConnected < timeoutDeadline)
                 {
                     Connected = false;
                 }
@@ -395,18 +416,18 @@ namespace WpfDemo.Sensors
                         if (await task)
                         {
                             Connected = true;
-                        }
+                            lastConnected = DateTime.Now;
 
+                        }
                     }
                     catch (Exception e)
                     {
-                        Debugger.Break();
+                        StatusMessage = "Connection Error:" + e.Message;
                     }
                     if (!Connected)
                     {
                         ConnectionStatus = BLESensorConnectionStatus.NotConnected;
                     }
-                    lastReport = DateTime.Now; // W
                 }
                 Thread.Sleep(5000);
             }
@@ -414,7 +435,7 @@ namespace WpfDemo.Sensors
         protected void EnableAutoConnect()
         {
             shouldAutoConnectContinue = true;
-            autoConnectTask = Task.Run(autoConnectWorkerAsync);
+            autoConnectTask = Task.Run(() => autoConnectWorkerAsync());
         }
         protected void DisableAutoConnect()
         {
@@ -428,9 +449,19 @@ namespace WpfDemo.Sensors
         {
             if (subscribedCharacteristic != null)
             {
+                _ = Task.Run(async () =>
+                    {
+                        GattCommunicationStatus disableNotificationstatus =
+                        await subscribedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
+                        if (disableNotificationstatus != GattCommunicationStatus.Success)
+                        {
+                            Debug.WriteLine("Error clearing registering for value changes: " + disableNotificationstatus);
+                        }
+                    });
+
                 subscribedCharacteristic.ValueChanged -= Characteristic_ValueChanged;
                 subscribedCharacteristic = null;
-             
+
                 Debug.WriteLine("Cleanup Subscription");
             }
             if (selectedService != null)

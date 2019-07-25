@@ -56,7 +56,10 @@
                 <Button x:Name="btnClearBind" Content="Clear" Width="75" Click="BtnClearBind_Click" Margin="10,0,0,0"/>
 
             </StackPanel>
-
+            <StackPanel Margin="10,0" Orientation="Horizontal" >
+                <Label  Content="Status: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding StatusMessage}"  VerticalAlignment="Center" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

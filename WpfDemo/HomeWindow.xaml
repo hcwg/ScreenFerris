@@ -21,15 +21,10 @@
             <Controls:MetroTabItem Header="Add Sensor">
                 <Frame x:Name="AddSensorFrame"/>
             </Controls:MetroTabItem>
-
-
         </Controls:MetroAnimatedSingleRowTabControl>
         <StackPanel Margin="0,0,0,8" Orientation="Horizontal" Height="30" VerticalAlignment="Bottom" Grid.RowSpan="2" HorizontalAlignment="Right" Width="160">
             <Button x:Name="btnQuit" Content="Quit" HorizontalAlignment="Left" Margin="10,0,0,0" Click="BtnQuit_Click" Height="28" VerticalAlignment="Bottom" Width="60" />
-            <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left"  Margin="10,0,0,0" Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" Width="60"/>
+            <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left"  Margin="10,0,0,0" Height="28" VerticalAlignment="Bottom" Click="BtnSave_Click" Width="60" IsEnabled="{Binding Path=ConfigModified}"/>
         </StackPanel>
-
-
-
     </Grid>
 </Window>

@@ -45,6 +45,7 @@ namespace WpfDemo
 
         BLESensorConnectionStatus ConnectionStatus { get; }
 
+        string StatusMessage { get; }
         void Disconnect();
 
         //event AngleChangeHandler AngleChange;

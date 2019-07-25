@@ -35,6 +35,11 @@ namespace WpfDemo
         /// </summary>
         public Vector3? Normal;
 
+        /// <summary>
+        /// AutoConnect when ScreenFerris starts
+        /// </summary>
+        public bool AutoConnect;
+
 
         /// <summary>
         /// Id of binding monitor

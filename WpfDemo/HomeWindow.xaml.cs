@@ -28,6 +28,7 @@ namespace WpfDemo
             SensorsFrame.Content = new SensorsPage(app);
             ManualFrame.Content = new ManualPage();
             AddSensorFrame.Content = new AddSensorPage(app, this);
+            btnSave.DataContext = app;
         }
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {

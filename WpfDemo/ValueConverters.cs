@@ -20,7 +20,7 @@ namespace WpfDemo.ValueConverters
             Vector3? v = value as Vector3?;
             if (v.HasValue)
             {
-                return String.Format("x = {0}, y = {0}, z = {0}", v.Value.X, v.Value.Y, v.Value.Z);
+                return String.Format("x = {0:0.0000}, y = {1:0.0000}, z = {2:0.0000}", v.Value.X, v.Value.Y, v.Value.Z);
             }
             return "";
         }

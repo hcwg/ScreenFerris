@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -16,11 +16,13 @@ namespace WpfDemo
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, INotifyPropertyChanged
     {
 
         public SensorsPage mainWindow { get; private set; }
         public AddSensorPage discoverSensorsWindow { get; private set; }
+
+        public bool ConfigModified { get => configStore.Modified; }
 
         public ObservableCollection<IBLEAccelerationSensor> Sensors
         {
@@ -35,6 +37,8 @@ namespace WpfDemo
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private HomeWindow homeWindow;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public App()
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -44,6 +48,7 @@ namespace WpfDemo
             base.OnStartup(e);
 
             configStore = new SFConfigStore();
+            configStore.PropertyChanged += ConfigStorePropertyChanged;
 
             // init sensors
             bleSensorsDict = new Dictionary<string, IBLEAccelerationSensor>();
@@ -56,6 +61,8 @@ namespace WpfDemo
                     Normal = sensorConfig.Normal,
                     MACAddress = sensorConfig.MACAddress,
                 };
+                sensor.AutoConnect = sensorConfig.AutoConnect;
+                sensor.Binding.MonitorDeviceName = sensorConfig.BindedMonitor;
                 sensor.PropertyChanged += (object s, PropertyChangedEventArgs ev) =>
                 {
                     SyncSensorProperty(sensor, sensorConfig, ev.PropertyName);
@@ -131,14 +138,23 @@ namespace WpfDemo
             {
                 throw new NotImplementedException();
             }
-            //System.Diagnostics.Debugger.Break();
+            configStore.Modified = true;
 
         }
         private void SensorPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
+
+        }
+        private void ConfigStorePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Modified")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConfigModified"));
+            }
         }
         private void SyncSensorProperty(IBLEAccelerationSensor sensor, BLEGravitySensorConfig sensorConfig, string propertyName)
         {
+            bool isConfigProperty = true;
             switch (propertyName)
             {
                 case "DeviceName":
@@ -156,6 +172,26 @@ namespace WpfDemo
                         sensorConfig.Normal = sensor.Normal;
                         break;
                     }
+                case "AutoConnect":
+                    {
+                        sensorConfig.AutoConnect = sensor.AutoConnect;
+                        break;
+                    }
+                case "BindMonitor":
+                    {
+                        sensorConfig.BindedMonitor = sensor.Binding.MonitorDeviceName;
+                        break;
+                    }
+                default:
+                    {
+                        isConfigProperty = false;
+                        break;
+                    }
+
+            }
+            if (isConfigProperty)
+            {
+                configStore.Modified = true;
             }
         }
         public void SaveSettings()
