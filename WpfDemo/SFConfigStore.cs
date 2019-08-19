@@ -1,36 +1,34 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfDemo
+﻿namespace WpfDemo
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.IO;
+    using Newtonsoft.Json;
+
     public class SFConfigStore : INotifyPropertyChanged
     {
         public SFSettings settings;
+
         public bool Modified
         {
-            get => modified; set
+            get => this.modified; set
             {
-                if (value != modified)
+                if (value != this.modified)
                 {
-                    modified = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Modified"));
+                    this.modified = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Modified"));
                 }
             }
         }
-        private bool modified;
-        private readonly string configurFilePath;
 
+        private readonly string configurFilePath;
+        private bool modified;
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-            //ContractResolver = new SettingsReaderContractResolver(),
+            // ContractResolver = new SettingsReaderContractResolver(),
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
@@ -42,43 +40,46 @@ namespace WpfDemo
             {
                 configurFilePath = "SFSettings.json";
             }
+
             this.configurFilePath = configurFilePath;
-            settings = Load(this.configurFilePath) as SFSettings;
-            Modified = false;
-            SettingsSanityCheck();
+            this.settings = this.Load(this.configurFilePath) as SFSettings;
+            this.Modified = false;
+            this.SettingsSanityCheck();
         }
 
-        void SettingsSanityCheck()
+        private void SettingsSanityCheck()
         {
-            if (settings == null)
+            if (this.settings == null)
             {
-                settings = new SFSettings();
+                this.settings = new SFSettings();
             }
-            if (settings.sensors == null)
+
+            if (this.settings.sensors == null)
             {
-                settings.sensors = new List<BLEGravitySensorConfig>();
+                this.settings.sensors = new List<BLEGravitySensorConfig>();
             }
         }
 
-        object Load(string filePath)
+        private object Load(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 return Activator.CreateInstance(typeof(SFSettings));
             }
+
             string jsonFile = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject(jsonFile, typeof(SFSettings), JsonSerializerSettings);
         }
 
         public string Serialize()
         {
-            return JsonConvert.SerializeObject(settings, Formatting.Indented);
+            return JsonConvert.SerializeObject(this.settings, Formatting.Indented);
         }
 
         public void Save()
         {
-            File.WriteAllText(configurFilePath, Serialize());
-            Modified = false;
+            File.WriteAllText(this.configurFilePath, this.Serialize());
+            this.Modified = false;
         }
 
     }

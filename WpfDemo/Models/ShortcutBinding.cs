@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfDemo.Models
+﻿namespace WpfDemo.Models
 {
+    using System.ComponentModel;
+
     public class ShortcutBinding : INotifyPropertyChanged
     {
         private string shortcut;
         private bool enabled;
         private bool isActive;
+
         public string Shortcut
         {
-            get => shortcut;
+            get => this.shortcut;
             set
             {
-                if (value != shortcut)
+                if (value != this.shortcut)
                 {
-                    shortcut = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Shortcut"));
+                    this.shortcut = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Shortcut"));
                 }
             }
         }
+
         public bool Enabled
         {
-            get => enabled;
+            get => this.enabled;
             set
             {
-                if (value != enabled)
+                if (value != this.enabled)
                 {
-                    enabled = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Enabled"));
+                    this.enabled = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Enabled"));
 
                 }
 
@@ -41,16 +38,17 @@ namespace WpfDemo.Models
 
         public bool IsActive
         {
-            get => isActive;
+            get => this.isActive;
             set
             {
-                if (value != isActive)
+                if (value != this.isActive)
                 {
-                    isActive = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("isActive"));
+                    this.isActive = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("isActive"));
                 }
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

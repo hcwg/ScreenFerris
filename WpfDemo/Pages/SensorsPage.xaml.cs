@@ -1,66 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using WpfDemo.UserControls;
-
-namespace WpfDemo
+﻿namespace WpfDemo
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Data;
+    using WpfDemo.UserControls;
 
     /// <summary>
-    /// Interaction logic for SensorsPage.xaml
+    /// Interaction logic for SensorsPage.xaml.
     /// </summary>
     public partial class SensorsPage : Page
     {
         private App app;
 
         public ObservableCollection<IBLEAccelerationSensor> Sensors;
+
         public SensorsPage(App app)
         {
             this.app = app;
-            Sensors = app.Sensors;
+            this.Sensors = app.Sensors;
 
-            InitializeComponent();
+            this.InitializeComponent();
 
-            sensorsListView.ItemsSource = Sensors;
-            if (Sensors.Count > 0)
+            this.sensorsListView.ItemsSource = this.Sensors;
+            if (this.Sensors.Count > 0)
             {
-                sensorsListView.SelectedIndex = 0;
+                this.sensorsListView.SelectedIndex = 0;
             }
         }
-
-   
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
-            int newIndex = Math.Min(Sensors.Count - 2, sensorsListView.SelectedIndex);
-            Sensors.Remove(sensorsListView.SelectedItem as IBLEAccelerationSensor);
+            int newIndex = Math.Min(this.Sensors.Count - 2, this.sensorsListView.SelectedIndex);
+            this.Sensors.Remove(this.sensorsListView.SelectedItem as IBLEAccelerationSensor);
             if (newIndex >= 0)
             {
-                Dispatcher.Invoke(() => { sensorsListView.SelectedIndex = newIndex; });
+                this.Dispatcher.Invoke(() => { this.sensorsListView.SelectedIndex = newIndex; });
             }
         }
-
 
         private void SensorsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0) { return; }
             var sensor = e.AddedItems[0] as IBLEAccelerationSensor;
             SensorControl sensorControl = new SensorControl(sensor);
-            rightContent.Content = sensorControl;
+            this.rightContent.Content = sensorControl;
         }
-
 
     }
 

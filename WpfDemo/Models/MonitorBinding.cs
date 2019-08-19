@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfDemo
+﻿namespace WpfDemo
 {
+    using System.ComponentModel;
+
     public class MonitorBinding : INotifyPropertyChanged
     {
         private string monitorDeviceName;
 
         public string MonitorDeviceName
         {
-            get => monitorDeviceName;
+            get => this.monitorDeviceName;
             set
             {
-                monitorDeviceName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MonitorDeviceName"));
+                this.monitorDeviceName = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MonitorDeviceName"));
             }
         }
 
@@ -29,22 +24,24 @@ namespace WpfDemo
 
         public MonitorBinding()
         {
-            MonitorDeviceName = "";
-            lastOrientation = null;
-            Enabled = true;
+            this.MonitorDeviceName = string.Empty;
+            this.lastOrientation = null;
+            this.Enabled = true;
         }
+
         public void SensorPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "Orientation") { return; }
-            if (!Enabled) { return; }
-            if (MonitorDeviceName == null || MonitorDeviceName == "") { return; }
+            if (!this.Enabled) { return; }
+            if (this.MonitorDeviceName == null || this.MonitorDeviceName == string.Empty) { return; }
             Display.Orientations? newOrientation = (sender as IBLEAccelerationSensor).Orientation;
-            if (newOrientation == lastOrientation) { return; }
+            if (newOrientation == this.lastOrientation) { return; }
             if (newOrientation.HasValue)
             {
-                Display.Rotate(MonitorDeviceName, newOrientation.Value);
+                Display.Rotate(this.MonitorDeviceName, newOrientation.Value);
             }
-            lastOrientation = newOrientation;
+
+            this.lastOrientation = newOrientation;
         }
     }
 }

@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Devices.Enumeration;
-using Windows.Security.Cryptography;
-
-namespace WpfDemo.Sensors
+﻿namespace WpfDemo.Sensors
 {
-    using ControlzEx.Standard;
-    using System.Net.NetworkInformation;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Numerics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Windows.Devices.Bluetooth;
+    using Windows.Devices.Bluetooth.GenericAttributeProfile;
+    using Windows.Devices.Enumeration;
+    using Windows.Security.Cryptography;
     using Orientations = WpfDemo.Display.Orientations;
+
     public class TheSensor : IBLEAccelerationSensor
     {
         protected string deviceId;
         protected string deviceName;
         protected bool autoConnect;
         protected Task autoConnectTask;
-        protected Vector3? baseline, normal;
-        protected DateTime lastReport, lastConnected;
+        protected Vector3? baseline;
+        protected Vector3? normal;
+        protected DateTime lastReport;
+        protected DateTime lastConnected;
         protected MonitorBinding monitorBinding;
         protected string statusMessage;
 
@@ -33,14 +31,13 @@ namespace WpfDemo.Sensors
         protected GattDeviceService selectedService;
         protected GattCharacteristic subscribedCharacteristic = null;
 
-
         // Sensor status
         protected Vector3? acceleration;
         protected double? angle;
         protected Orientations? orientation;
         protected bool connected;
 
-        // 
+        //
         protected bool shouldAutoConnectContinue;
 
         BLESensorConnectionStatus connectionStatus;
@@ -48,230 +45,237 @@ namespace WpfDemo.Sensors
         readonly Guid serviceUuid = new Guid("6a800001-b5a3-f393-e0a9-e50e24dcca9e");
         readonly Guid characteristicUuid = new Guid("6a806050-b5a3-f393-e0a9-e50e24dcca9e");
 
-
         public TheSensor(string deviceId, string deviceName)
         {
             this.deviceId = deviceId;
             this.deviceName = deviceName;
-            autoConnect = false;
-            acceleration = null;
-            angle = null;
-            orientation = null;
-            shouldAutoConnectContinue = false;
-            monitorBinding = new MonitorBinding();
-            this.PropertyChanged += monitorBinding.SensorPropertyChangedEventHandler;
-            monitorBinding.PropertyChanged += MonitorBindingPropertyChanged;
-            connectionStatus = BLESensorConnectionStatus.NotConnected;
+            this.autoConnect = false;
+            this.acceleration = null;
+            this.angle = null;
+            this.orientation = null;
+            this.shouldAutoConnectContinue = false;
+            this.monitorBinding = new MonitorBinding();
+            this.PropertyChanged += this.monitorBinding.SensorPropertyChangedEventHandler;
+            this.monitorBinding.PropertyChanged += this.MonitorBindingPropertyChanged;
+            this.connectionStatus = BLESensorConnectionStatus.NotConnected;
         }
 
         public Vector3? Baseline
         {
-            get => baseline;
+            get => this.baseline;
             set
             {
-                baseline = value;
-                if (baseline.HasValue && baseline.Value.Length() > 0) { baseline /= baseline.Value.Length(); }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Baseline"));
+                this.baseline = value;
+                if (this.baseline.HasValue && this.baseline.Value.Length() > 0) { this.baseline /= this.baseline.Value.Length(); }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Baseline"));
 
             }
         }
+
         public Vector3? Normal
         {
-            get => normal;
+            get => this.normal;
             set
             {
-                normal = value;
-                if (normal.HasValue && normal.Value.Length() > 0) { normal /= normal.Value.Length(); }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Normal"));
-
+                this.normal = value;
+                if (this.normal.HasValue && this.normal.Value.Length() > 0) { this.normal /= this.normal.Value.Length(); }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Normal"));
 
             }
         }
+
         public string DeviceId
         {
-            get => deviceId;
+            get => this.deviceId;
         }
 
         public string DeviceName
         {
-            get => deviceName;
+            get => this.deviceName;
             set
             {
-                deviceName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeviceName"));
+                this.deviceName = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeviceName"));
 
             }
         }
 
         public bool AutoConnect
         {
-            get => autoConnect;
+            get => this.autoConnect;
             set
             {
-                if (value == autoConnect) { return; }
+                if (value == this.autoConnect) { return; }
                 if (value == true)
                 {
-                    EnableAutoConnect();
+                    this.EnableAutoConnect();
                 }
                 else
                 {
-                    DisableAutoConnect();
+                    this.DisableAutoConnect();
 
                 }
-                bool changed = value != autoConnect;
-                autoConnect = value;
-                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect")); }
+
+                bool changed = value != this.autoConnect;
+                this.autoConnect = value;
+                if (changed) { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect")); }
 
             }
         }
 
         public bool Connected
         {
-            get => connected;
+            get => this.connected;
             private set
             {
-                if (value != connected)
+                if (value != this.connected)
                 {
-                    connected = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
-                    if (!connected)
+                    this.connected = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
+                    if (!this.connected)
                     {
-                        CleanUpSubscription();
+                        this.CleanUpSubscription();
                     }
-                    if (connected)
+
+                    if (this.connected)
                     {
-                        ConnectionStatus = BLESensorConnectionStatus.Connected;
+                        this.ConnectionStatus = BLESensorConnectionStatus.Connected;
                     }
                     else
                     {
-                        ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                        this.ConnectionStatus = BLESensorConnectionStatus.NotConnected;
                     }
                 }
             }
         }
 
-        public Vector3? Acceleration { get => acceleration; }
+        public Vector3? Acceleration { get => this.acceleration; }
 
-        public double? Angle { get => angle; }
+        public double? Angle { get => this.angle; }
 
-        public Orientations? Orientation { get => orientation; }
+        public Orientations? Orientation { get => this.orientation; }
 
         public string MACAddress { get; set; }
+
         public DateTime LastReport
         {
-            get => lastReport;
+            get => this.lastReport;
             private set
             {
-                lastReport = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
+                this.lastReport = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
             }
         }
 
-
-        public MonitorBinding Binding { get => monitorBinding; }
+        public MonitorBinding Binding { get => this.monitorBinding; }
 
         public BLESensorConnectionStatus ConnectionStatus
         {
-            get => connectionStatus;
+            get => this.connectionStatus;
             private set
             {
-                bool changed = value != connectionStatus;
-                connectionStatus = value;
-                if (changed) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionStatus")); }
+                bool changed = value != this.connectionStatus;
+                this.connectionStatus = value;
+                if (changed) { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionStatus")); }
             }
         }
 
         public string StatusMessage
         {
-            get => statusMessage;
-            set {
-                if (value != statusMessage)
+            get => this.statusMessage;
+            set
+            {
+                if (value != this.statusMessage)
                 {
-                    statusMessage = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StatusMessage"));
+                    this.statusMessage = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StatusMessage"));
                 }
+
                 Debug.WriteLine(value);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
         #region logic code
         protected void bluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
         {
             if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
-                Connected = false;
-                sender.ConnectionStatusChanged -= bluetoothLeDeviceConnectionStatusChanged;
+                this.Connected = false;
+                sender.ConnectionStatusChanged -= this.bluetoothLeDeviceConnectionStatusChanged;
             }
         }
+
         protected async Task<bool> ConnectToSensor()
         {
-            StatusMessage = "Connecting" + DeviceId;
-            if (bluetoothLEDevice == null)
+            this.StatusMessage = "Connecting" + this.DeviceId;
+            if (this.bluetoothLEDevice == null)
             {
-                bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
-                bluetoothLEDevice.ConnectionStatusChanged += bluetoothLeDeviceConnectionStatusChanged;
+                this.bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(this.deviceId);
+                this.bluetoothLEDevice.ConnectionStatusChanged += this.bluetoothLeDeviceConnectionStatusChanged;
             }
 
-            GattDeviceServicesResult servicesResult = await bluetoothLEDevice.GetGattServicesForUuidAsync(serviceUuid);
+            GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.serviceUuid);
             if (servicesResult.Status != GattCommunicationStatus.Success)
             {
-                StatusMessage = "GetGattServicesAsync Error:" + servicesResult.ProtocolError.ToString();
+                this.StatusMessage = "GetGattServicesAsync Error:" + servicesResult.ProtocolError.ToString();
                 return false;
             }
+
             if (servicesResult.Services.Count == 0)
             {
-                StatusMessage = "Can not get service.";
+                this.StatusMessage = "Can not get service.";
                 return false;
             }
-            if (selectedService != null)
+
+            if (this.selectedService != null)
             {
-                selectedService.Dispose();
+                this.selectedService.Dispose();
             }
-            selectedService = servicesResult.Services[0];
+
+            this.selectedService = servicesResult.Services[0];
 
             IReadOnlyList<GattCharacteristic> characteristics = null;
 
+            this.StatusMessage = "Successfully conecte to service: " + this.selectedService.Uuid.ToString();
 
-            StatusMessage = "Successfully conecte to service: " + selectedService.Uuid.ToString();
-
-            DeviceAccessStatus accessStatus = await selectedService.RequestAccessAsync();
+            DeviceAccessStatus accessStatus = await this.selectedService.RequestAccessAsync();
             if (accessStatus == DeviceAccessStatus.Allowed)
             {
-                var result = await selectedService.GetCharacteristicsForUuidAsync(characteristicUuid);
+                var result = await this.selectedService.GetCharacteristicsForUuidAsync(this.characteristicUuid);
                 if (result.Status == GattCommunicationStatus.Success)
                 {
                     characteristics = result.Characteristics;
                 }
                 else
                 {
-                    StatusMessage = "Error accessing service " + result.Status + ".";
+                    this.StatusMessage = "Error accessing service " + result.Status + ".";
                     return false;
                 }
             }
             else
             {
-                StatusMessage = "ERROR RequestAccessAsync: " + accessStatus.ToString();
+                this.StatusMessage = "ERROR RequestAccessAsync: " + accessStatus.ToString();
                 return false;
             }
-
 
             if (characteristics.Count == 0)
             {
-                StatusMessage = "Characteristic not found.";
+                this.StatusMessage = "Characteristic not found.";
                 return false;
             }
+
             GattCharacteristic selectedCharacteristic = characteristics[0];
 
             GattCommunicationStatus disableNotificationstatus =
                 await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
             if (disableNotificationstatus != GattCommunicationStatus.Success)
             {
-                StatusMessage = "Error clearing registering for value changes: " + disableNotificationstatus;
+                this.StatusMessage = "Error clearing registering for value changes: " + disableNotificationstatus;
                 return false;
             }
+
             // Enable notify
             var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.None;
             if (selectedCharacteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
@@ -284,30 +288,34 @@ namespace WpfDemo.Sensors
             }
             else
             {
-                StatusMessage = "Characteristic doesn't support Indicate or Notify";
+                this.StatusMessage = "Characteristic doesn't support Indicate or Notify";
                 return false;
             }
+
             GattCommunicationStatus status = await selectedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
             if (status != GattCommunicationStatus.Success)
             {
-                StatusMessage = "Error registering for value changes: " + status;
+                this.StatusMessage = "Error registering for value changes: " + status;
                 return false;
             }
-            StatusMessage = "Notify enabled";
-            subscribedCharacteristic = selectedCharacteristic;
-            subscribedCharacteristic.ValueChanged += Characteristic_ValueChanged;
+
+            this.StatusMessage = "Notify enabled";
+            this.subscribedCharacteristic = selectedCharacteristic;
+            this.subscribedCharacteristic.ValueChanged += this.Characteristic_ValueChanged;
 
             return true;
 
         }
+
         private void MonitorBindingPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BindMonitor"));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BindMonitor"));
         }
+
         protected void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            LastReport = DateTime.Now;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
+            this.LastReport = DateTime.Now;
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
 
             byte[] data;
             CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out data); ;
@@ -320,6 +328,7 @@ namespace WpfDemo.Sensors
                     data[i + 1] = t;
                 }
             }
+
             Int16 ix = System.BitConverter.ToInt16(data, 0);
             Int16 iy = System.BitConverter.ToInt16(data, 2);
             Int16 iz = System.BitConverter.ToInt16(data, 4);
@@ -327,7 +336,7 @@ namespace WpfDemo.Sensors
             double x = ix / umax * 20;
             double y = iy / umax * 20;
             double z = iz / umax * 20;
-            OnNewAcceleration(new Vector3((float)x, (float)y, (float)z));
+            this.OnNewAcceleration(new Vector3((float)x, (float)y, (float)z));
         }
 
         protected void OnNewAcceleration(Vector3 acceleration)
@@ -335,32 +344,33 @@ namespace WpfDemo.Sensors
             if (acceleration.Length() == 0) { return; }
             Vector3 v = acceleration;
             Vector3? right = null;
-            if (normal.HasValue && baseline.HasValue)
+            if (this.normal.HasValue && this.baseline.HasValue)
             {
-                right = Vector3.Cross(normal.Value, baseline.Value);
+                right = Vector3.Cross(this.normal.Value, this.baseline.Value);
             }
-            if (normal != null)
+
+            if (this.normal != null)
             {
-                v -= normal.Value * Vector3.Dot(v, normal.Value);
+                v -= this.normal.Value * Vector3.Dot(v, this.normal.Value);
                 v /= v.Length();
             }
 
             double? newAngle = null;
-            if (baseline.HasValue)
+            if (this.baseline.HasValue)
             {
                 if (!right.HasValue)
                 {
-                    right = Vector3.Cross(v, baseline.Value);
+                    right = Vector3.Cross(v, this.baseline.Value);
                     right /= right.Value.Length();
                 }
-                float x = Vector3.Dot(v, baseline.Value);
+
+                float x = Vector3.Dot(v, this.baseline.Value);
                 float y = Vector3.Dot(v, right.Value);
                 newAngle = Math.Atan2(y, x);
             }
 
-
             Orientations? newOrientation = null;
-            if (newAngle.HasValue && normal.HasValue)
+            if (newAngle.HasValue && this.normal.HasValue)
             {
                 if (newAngle > -Math.PI / 4 && newAngle <= Math.PI / 4)
                 {
@@ -380,107 +390,118 @@ namespace WpfDemo.Sensors
                 }
             }
 
-            if (newAngle != angle)
+            if (newAngle != this.angle)
             {
-                angle = newAngle;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Angle"));
+                this.angle = newAngle;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Angle"));
             }
-            if (newOrientation != orientation)
+
+            if (newOrientation != this.orientation)
             {
-                orientation = newOrientation;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Orientation"));
+                this.orientation = newOrientation;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Orientation"));
             }
+
             if (acceleration != this.acceleration)
             {
                 this.acceleration = acceleration;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Acceleration"));
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Acceleration"));
             }
 
         }
+
         protected async void autoConnectWorkerAsync()
         {
-            Debug.WriteLine(String.Format("Enabling atuoconnect on {0}", deviceId));
-            while (shouldAutoConnectContinue)
+            Debug.WriteLine(String.Format("Enabling atuoconnect on {0}", this.deviceId));
+            while (this.shouldAutoConnectContinue)
             {
                 var timeoutDeadline = DateTime.Now - new TimeSpan(hours: 0, minutes: 0, seconds: 30);
-                if (lastReport < timeoutDeadline && lastConnected < timeoutDeadline)
+                if (this.lastReport < timeoutDeadline && this.lastConnected < timeoutDeadline)
                 {
-                    Connected = false;
+                    this.Connected = false;
                 }
-                if (!Connected)
+
+                if (!this.Connected)
                 {
-                    ConnectionStatus = BLESensorConnectionStatus.Connecting;
-                    var task = ConnectToSensor();
+                    this.ConnectionStatus = BLESensorConnectionStatus.Connecting;
+                    var task = this.ConnectToSensor();
                     try
                     {
                         if (await task)
                         {
-                            Connected = true;
-                            lastConnected = DateTime.Now;
+                            this.Connected = true;
+                            this.lastConnected = DateTime.Now;
 
                         }
                     }
                     catch (Exception e)
                     {
-                        StatusMessage = "Connection Error:" + e.Message;
+                        this.StatusMessage = "Connection Error:" + e.Message;
                     }
-                    if (!Connected)
+
+                    if (!this.Connected)
                     {
-                        ConnectionStatus = BLESensorConnectionStatus.NotConnected;
+                        this.ConnectionStatus = BLESensorConnectionStatus.NotConnected;
                     }
                 }
+
                 Thread.Sleep(5000);
             }
         }
+
         protected void EnableAutoConnect()
         {
-            shouldAutoConnectContinue = true;
-            autoConnectTask = Task.Run(() => autoConnectWorkerAsync());
+            this.shouldAutoConnectContinue = true;
+            this.autoConnectTask = Task.Run(() => this.autoConnectWorkerAsync());
         }
+
         protected void DisableAutoConnect()
         {
-            if (autoConnectTask != null)
+            if (this.autoConnectTask != null)
             {
-                shouldAutoConnectContinue = false;
+                this.shouldAutoConnectContinue = false;
             }
 
         }
+
         protected void CleanUpSubscription()
         {
-            if (subscribedCharacteristic != null)
+            if (this.subscribedCharacteristic != null)
             {
                 _ = Task.Run(async () =>
                     {
                         GattCommunicationStatus disableNotificationstatus =
-                        await subscribedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
+                        await this.subscribedCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.None);
                         if (disableNotificationstatus != GattCommunicationStatus.Success)
                         {
                             Debug.WriteLine("Error clearing registering for value changes: " + disableNotificationstatus);
                         }
                     });
 
-                subscribedCharacteristic.ValueChanged -= Characteristic_ValueChanged;
-                subscribedCharacteristic = null;
+                this.subscribedCharacteristic.ValueChanged -= this.Characteristic_ValueChanged;
+                this.subscribedCharacteristic = null;
 
                 Debug.WriteLine("Cleanup Subscription");
             }
-            if (selectedService != null)
+
+            if (this.selectedService != null)
             {
-                selectedService.Session.Dispose();
-                selectedService.Dispose();
-                selectedService = null;
+                this.selectedService.Session.Dispose();
+                this.selectedService.Dispose();
+                this.selectedService = null;
             }
-            if (bluetoothLEDevice != null)
+
+            if (this.bluetoothLEDevice != null)
             {
-                bluetoothLEDevice.Dispose();
-                bluetoothLEDevice = null;
+                this.bluetoothLEDevice.Dispose();
+                this.bluetoothLEDevice = null;
             }
         }
 
         public void Disconnect()
         {
             this.AutoConnect = false;
-            CleanUpSubscription();
+            this.CleanUpSubscription();
         }
         #endregion
     }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-
-namespace WpfDemo
+﻿namespace WpfDemo
 {
     using System;
-    using System.Net;
+    using System.Collections.Generic;
     using System.Runtime.InteropServices;
+    using System.Text.RegularExpressions;
 
     public class Display
     {
@@ -24,8 +18,11 @@ namespace WpfDemo
         public class MonitorInfo
         {
             internal string deviceKey { get; set; }
+
             internal string deviceString { get; set; }
+
             internal string deviceName { get; set; }
+
             internal string deviceID { get; set; }
         }
 
@@ -41,6 +38,7 @@ namespace WpfDemo
                 {
                     return devDic;
                 }
+
                 if (d.StateFlags != 0)
                 {
                     // This is a monitor
@@ -72,6 +70,7 @@ namespace WpfDemo
                 // devNum = (uint)devName[11] - '0';
                 devNum = UInt32.Parse(pattern.Match(devName).Groups[2].Value);
             }
+
             return devNum;
         }
 
