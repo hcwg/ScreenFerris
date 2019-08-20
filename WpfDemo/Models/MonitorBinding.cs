@@ -2,9 +2,22 @@
 {
     using System.ComponentModel;
 
+    /// <summary>
+    /// Binding relationship between Sensor and Monitor.
+    /// </summary>
     public class MonitorBinding : INotifyPropertyChanged
     {
         private string monitorDeviceName;
+        private Display.Orientations? lastOrientation;
+
+        public MonitorBinding()
+        {
+            this.MonitorDeviceName = string.Empty;
+            this.lastOrientation = null;
+            this.Enabled = true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string MonitorDeviceName
         {
@@ -17,17 +30,6 @@
         }
 
         public bool Enabled { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private Display.Orientations? lastOrientation;
-
-        public MonitorBinding()
-        {
-            this.MonitorDeviceName = string.Empty;
-            this.lastOrientation = null;
-            this.Enabled = true;
-        }
 
         public void SensorPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {

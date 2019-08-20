@@ -12,14 +12,31 @@
 
     public enum BLESensorConnectionStatus
     {
+        /// <summary>
+        /// Connected.
+        /// </summary>
         Connected,
+
+        /// <summary>
+        /// Not Connected.
+        /// </summary>
         NotConnected,
+
+        /// <summary>
+        /// Connecting.
+        /// </summary>
         Connecting,
+
+        /// <summary>
+        /// Connection Error.
+        /// </summary>
         Error,
     }
 
     public interface IBLEAccelerationSensor : INotifyPropertyChanged
     {
+        string ModelName { get; }
+
         string DeviceId { get; }
 
         string DeviceName { get; set; }
@@ -30,9 +47,9 @@
 
         bool Connected { get; }
 
-        Vector3? Baseline { get; }
+        Vector3? Baseline { get; set; }
 
-        Vector3? Normal { get; }
+        Vector3? Normal { get; set; }
 
         Vector3? Acceleration { get; }
 
@@ -49,9 +66,5 @@
         string StatusMessage { get; }
 
         void Disconnect();
-
-        // event AngleChangeHandler AngleChange;
-        // event AccelerationChangeHandler AccelerationChange;
-        // event OrientationChanged OrientationChanged;
     }
 }

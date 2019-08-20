@@ -15,14 +15,14 @@
     /// </summary>
     public partial class CalibrationWindow : Window
     {
-        private Sensors.TheSensor sensor;
+        private IBLEAccelerationSensor sensor;
 
-        CaliberationStep step = CaliberationStep.FixLandscape;
+        private CaliberationStep step = CaliberationStep.FixLandscape;
 
         public CalibrationWindow(IBLEAccelerationSensor sensor)
         {
             this.InitializeComponent();
-            this.sensor = sensor as Sensors.TheSensor;
+            this.sensor = sensor;
             this.groupBoxCalibrationInfo.DataContext = sensor;
         }
 

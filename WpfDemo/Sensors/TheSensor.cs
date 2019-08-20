@@ -318,10 +318,10 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastReport"));
 
             byte[] data;
-            CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out data); ;
+            CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out data);
             if (System.BitConverter.IsLittleEndian)
             {
-                for (int i = 0; i < 12; i += 2)
+                for (int i = 0; i < 6; i += 2)
                 {
                     byte t = data[i];
                     data[i] = data[i + 1];
