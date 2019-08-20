@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfDemo"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        mc:Ignorable="d"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="330"
         >
     <Page.Resources>
         <DataTemplate x:Name="BluetoothDeviceItem" DataType="{x:Type local:ScanDeviceInfo}">
@@ -17,7 +17,7 @@
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
         <Button x:Name="btnStartScan" Content="Scan" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Width="136" Click="btnStartScanClick" Height="49" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
-        <ListView  x:Name="ScannedDevicesList" Margin="165,5,5,10" ItemsSource="{Binding DeviceCollection}">
+        <ListView  x:Name="ScannedDevicesList" Margin="165,5,5,25" ItemsSource="{Binding DeviceCollection}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:ScanDeviceInfo}">
                     <StackPanel Orientation="Vertical" Height="54" Width="164">
@@ -42,6 +42,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <Button x:Name="btnAdd" Content="Add" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" Width="136" Click="btnAddClick" Height="49" RenderTransformOrigin="-0.368,0.305" FontSize="20"/>
+        <TextBlock x:Name="txtblockMessage" HorizontalAlignment="Left" Margin="165,0,0,4" TextWrapping="Wrap" Height="16" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Page>

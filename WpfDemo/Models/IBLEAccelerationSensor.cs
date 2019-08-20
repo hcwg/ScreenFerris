@@ -41,7 +41,7 @@
 
         string DeviceName { get; set; }
 
-        string MACAddress { get; }
+        string MACAddress { get; set; }
 
         bool AutoConnect { get; set; }
 

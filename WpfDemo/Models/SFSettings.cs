@@ -16,6 +16,11 @@
         public string Name;
 
         /// <summary>
+        /// Device model.
+        /// </summary>
+        public string ModelName;
+
+        /// <summary>
         /// MAC address;.
         /// </summary>
         public string MACAddress;

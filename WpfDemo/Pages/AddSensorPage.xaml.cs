@@ -8,6 +8,7 @@
     using System.Windows.Controls;
     using Windows.Devices.Bluetooth;
     using Windows.Devices.Enumeration;
+    using WpfDemo.Sensors;
 
     public class ScanDeviceInfo : INotifyPropertyChanged
     {
@@ -162,13 +163,12 @@
             return null;
         }
 
-        #region "UICODE"
         private void btnStartScanClick(object sender, RoutedEventArgs e)
         {
             this.StartScan();
         }
 
-        private void btnAddClick(object sender, RoutedEventArgs e)
+        private async void btnAddClick(object sender, RoutedEventArgs e)
         {
             ScanDeviceInfo item = this.ScannedDevicesList.SelectedItem as ScanDeviceInfo;
             if (item == null)
@@ -176,14 +176,17 @@
                 return;
             }
 
-            var sensor = new Sensors.TheSensor(item.DeviceId, item.DeviceName)
+            BluetoothLEDevice bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(item.DeviceId);
+            string modelName = await SupportedSensors.GuessModelNameAsync(bluetoothLEDevice);
+            bluetoothLEDevice?.Dispose();
+            if (modelName == string.Empty)
             {
-                MACAddress = item.DeviceMAC,
-                // PhysicalAddress.Parse(item.DeviceMAC.Replace(':', '-').ToUpper())
-            };
+                this.txtblockMessage.Text = "Can't determinate Sensor Model.";
+            }
+
+            var sensor = SensorFactory.GetNewSensor(item.DeviceId, item.DeviceName, modelName);
+            sensor.MACAddress = item.DeviceMAC;
             this.app.Sensors.Insert(0, sensor);
         }
-
-        #endregion
     }
 }

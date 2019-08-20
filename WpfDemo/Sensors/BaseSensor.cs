@@ -13,7 +13,7 @@
     using Windows.Security.Cryptography;
     using Orientations = WpfDemo.Display.Orientations;
 
-    public class TheSensor : IBLEAccelerationSensor
+    public class BaseSensor : IBLEAccelerationSensor
     {
         protected string deviceId;
         protected string deviceName;
@@ -42,10 +42,9 @@
 
         BLESensorConnectionStatus connectionStatus;
 
-        readonly Guid serviceUuid = new Guid("6a800001-b5a3-f393-e0a9-e50e24dcca9e");
-        readonly Guid characteristicUuid = new Guid("6a806050-b5a3-f393-e0a9-e50e24dcca9e");
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public TheSensor(string deviceId, string deviceName)
+        public BaseSensor(string deviceId, string deviceName)
         {
             this.deviceId = deviceId;
             this.deviceName = deviceName;
@@ -59,6 +58,10 @@
             this.monitorBinding.PropertyChanged += this.MonitorBindingPropertyChanged;
             this.connectionStatus = BLESensorConnectionStatus.NotConnected;
         }
+
+        public virtual Guid ServiceUuid { get; } = new Guid("00000000-f92a-ad93-dc47-9c4df7aa5e9e");
+
+        public virtual Guid AccelerationCharacteristicUuid { get; } = new Guid("00006050-f92a-ad93-dc47-9c4df7aa5e9e");
 
         public Vector3? Baseline
         {
@@ -88,6 +91,8 @@
         {
             get => this.deviceId;
         }
+
+        public virtual string ModelName { get; } = "BaicBLEAcclerationSensor";
 
         public string DeviceName
         {
@@ -195,7 +200,6 @@
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #region logic code
         protected void bluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
@@ -216,7 +220,7 @@
                 this.bluetoothLEDevice.ConnectionStatusChanged += this.bluetoothLeDeviceConnectionStatusChanged;
             }
 
-            GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.serviceUuid);
+            GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.ServiceUuid);
             if (servicesResult.Status != GattCommunicationStatus.Success)
             {
                 this.StatusMessage = "GetGattServicesAsync Error:" + servicesResult.ProtocolError.ToString();
@@ -243,7 +247,7 @@
             DeviceAccessStatus accessStatus = await this.selectedService.RequestAccessAsync();
             if (accessStatus == DeviceAccessStatus.Allowed)
             {
-                var result = await this.selectedService.GetCharacteristicsForUuidAsync(this.characteristicUuid);
+                var result = await this.selectedService.GetCharacteristicsForUuidAsync(this.AccelerationCharacteristicUuid);
                 if (result.Status == GattCommunicationStatus.Success)
                 {
                     characteristics = result.Characteristics;

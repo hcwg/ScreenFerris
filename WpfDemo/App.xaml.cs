@@ -6,6 +6,7 @@ namespace WpfDemo
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Windows;
+    using WpfDemo.Sensors;
 
     /// <summary>
     /// Interaction logic for App.xaml.
@@ -52,12 +53,10 @@ namespace WpfDemo
             this.bleSensors = new ObservableCollection<IBLEAccelerationSensor>();
             foreach (BLEGravitySensorConfig sensorConfig in this.configStore.settings.sensors)
             {
-                var sensor = new Sensors.TheSensor(sensorConfig.Id, sensorConfig.Name)
-                {
-                    Baseline = sensorConfig.Baseline,
-                    Normal = sensorConfig.Normal,
-                    MACAddress = sensorConfig.MACAddress,
-                };
+                var sensor = SensorFactory.GetNewSensor(sensorConfig.Id, sensorConfig.Name, sensorConfig.ModelName);
+                sensor.Baseline = sensorConfig.Baseline;
+                sensor.Normal = sensorConfig.Normal;
+                sensor.MACAddress = sensorConfig.MACAddress;
                 sensor.AutoConnect = sensorConfig.AutoConnect;
                 sensor.Binding.MonitorDeviceName = sensorConfig.BindedMonitor;
                 sensor.PropertyChanged += (object s, PropertyChangedEventArgs ev) =>
@@ -113,7 +112,7 @@ namespace WpfDemo
                 List<BLEGravitySensorConfig> newSensorConfigs = new List<BLEGravitySensorConfig>();
                 foreach (var item in e.NewItems)
                 {
-                    var sensor = item as Sensors.TheSensor;
+                    var sensor = item as IBLEAccelerationSensor;
                     this.bleSensorsDict[sensor.DeviceId] = sensor;
                     var sensorConfig = new BLEGravitySensorConfig()
                     {
@@ -121,7 +120,8 @@ namespace WpfDemo
                         Id = sensor.DeviceId,
                         Baseline = sensor.Baseline,
                         Normal = sensor.Normal,
-                        MACAddress = sensor.MACAddress
+                        MACAddress = sensor.MACAddress,
+                        ModelName = sensor.ModelName,
                     };
                     newSensorConfigs.Add(sensorConfig);
                     sensor.PropertyChanged += (object s, PropertyChangedEventArgs ev) =>

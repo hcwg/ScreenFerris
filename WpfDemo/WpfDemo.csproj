@@ -73,12 +73,12 @@
     <Compile Include="HomeWindow.xaml.cs">
       <DependentUpon>HomeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\IBLEAccelerationSensor.cs" />
     <Compile Include="Models\MonitorBinding.cs" />
     <Compile Include="Models\ShortcutBinding.cs" />
     <Compile Include="Pages\ManualPage.xaml.cs">
       <DependentUpon>ManualPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\IBLEAccSensor.cs" />
     <Compile Include="Pages\SensorsPage.xaml.cs">
       <DependentUpon>SensorsPage.xaml</DependentUpon>
     </Compile>
@@ -87,7 +87,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Sensors\TheSensor.cs" />
+    <Compile Include="Sensors\BaseSensor.cs" />
+    <Compile Include="Sensors\FerrisSensorV1.cs" />
+    <Compile Include="Sensors\InfoLinkNRF51SensorTag.cs" />
+    <Compile Include="Sensors\SensorFactory.cs" />
+    <Compile Include="Sensors\SupportedSensors.cs" />
     <Compile Include="SFConfigStore.cs" />
     <Compile Include="Models\SFSettings.cs" />
     <Compile Include="UserControls\CalibrationInfo.xaml.cs">
