@@ -51,6 +51,7 @@
         private DeviceWatcher deviceWatcher;
         private App app;
         private Window window;
+        private bool isScanning;
 
         public AddSensorPage(App app, Window window)
         {
@@ -58,9 +59,36 @@
             this.window = window;
             this.DeviceCollection = new ObservableCollection<ScanDeviceInfo>();
             this.InitializeComponent();
+            this.IsScanning = false;
         }
 
         public ObservableCollection<ScanDeviceInfo> DeviceCollection { get; set; }
+
+        public bool IsScanning
+        {
+            get => this.isScanning;
+            set
+            {
+                if (value)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.btnStartScan.IsEnabled = false;
+                        this.btnStopScan.IsEnabled = true;
+                    });
+                }
+                else
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.btnStartScan.IsEnabled = true;
+                        this.btnStopScan.IsEnabled = false;
+                    });
+                }
+
+                this.isScanning = value;
+            }
+        }
 
         public void StartScan()
         {
@@ -84,7 +112,7 @@
                 this.deviceWatcher.EnumerationCompleted += this.DeviceWatcher_EnumerationCompleted;
                 this.deviceWatcher.Stopped += this.DeviceWatcher_Stopped;
                 this.deviceWatcher.Start();
-
+                this.IsScanning = true;
             }
         }
 
@@ -108,7 +136,11 @@
         private void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation deviceInfo)
         {
             Debug.WriteLine(string.Format("Added {0}{1}", deviceInfo.Id, deviceInfo.Name));
-            if (sender != this.deviceWatcher) { return; }
+            if (sender != this.deviceWatcher)
+            {
+                return;
+            }
+
             this.window.Dispatcher.Invoke(() =>
             {
                 this.DeviceCollection.Add(new ScanDeviceInfo(deviceInfo));
@@ -117,11 +149,19 @@
 
         private void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
         {
-            if (sender != this.deviceWatcher) { return; }
+            if (sender != this.deviceWatcher)
+            {
+                return;
+            }
+
             Debug.WriteLine(string.Format("Added {0}{1}", deviceInfoUpdate.Id, deviceInfoUpdate.Properties));
 
             ScanDeviceInfo dev = this.FindDeviceInfoById(deviceInfoUpdate.Id);
-            if (dev == null) { return; }
+            if (dev == null)
+            {
+                return;
+            }
+
             dev.Update(deviceInfoUpdate);
         }
 
@@ -135,16 +175,17 @@
                 {
                     this.DeviceCollection.Remove(dev);
                 }
-
             });
         }
 
         private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object e)
         {
+            this.IsScanning = false;
         }
 
         private void DeviceWatcher_Stopped(DeviceWatcher sender, object e)
         {
+            this.IsScanning = false;
         }
 
         private ScanDeviceInfo FindDeviceInfoById(string id)
@@ -160,12 +201,17 @@
             return null;
         }
 
-        private void btnStartScanClick(object sender, RoutedEventArgs e)
+        private void BtnStartScanClick(object sender, RoutedEventArgs e)
         {
             this.StartScan();
         }
 
-        private async void btnAddClick(object sender, RoutedEventArgs e)
+        private void BtnStopScanClick(object sender, RoutedEventArgs e)
+        {
+            this.StopScan();
+        }
+
+        private async void BtnAddClick(object sender, RoutedEventArgs e)
         {
             ScanDeviceInfo item = this.ScannedDevicesList.SelectedItem as ScanDeviceInfo;
             if (item == null)
