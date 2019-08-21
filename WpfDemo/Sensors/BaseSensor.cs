@@ -219,6 +219,11 @@
             this.CleanUpSubscription();
         }
 
+        protected void TriggerPropertyChanged(object sender, PropertyChangedEventArgs ev)
+        {
+            this.PropertyChanged?.Invoke(sender, ev);
+        }
+
         protected void BluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
         {
             if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)

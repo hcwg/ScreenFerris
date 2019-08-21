@@ -14,7 +14,5 @@
                     return new BaseSensor(deviceId, deviceName);
             }
         }
-
-
     }
 }

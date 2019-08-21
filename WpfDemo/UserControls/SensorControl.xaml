@@ -26,6 +26,8 @@
             <StackPanel  Orientation="Horizontal" Margin="10,0">
                 <Label Content="MacAddress:" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
                 <TextBlock Text="{Binding MACAddress}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="116"/>
+                <Label Content="BatteryLevel:" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
+                <TextBlock Text="{Binding BatteryLevel}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="116"/>
             </StackPanel>
             <StackPanel Margin="10,0" Orientation="Horizontal" >
                 <Label Content="Connected:" HorizontalAlignment="Left" VerticalAlignment="Center"/>

@@ -74,6 +74,7 @@
       <DependentUpon>HomeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IBLEAccelerationSensor.cs" />
+    <Compile Include="Models\IBLEBatteryDevice.cs" />
     <Compile Include="Models\MonitorBinding.cs" />
     <Compile Include="Models\ShortcutBinding.cs" />
     <Compile Include="Pages\ManualPage.xaml.cs">
