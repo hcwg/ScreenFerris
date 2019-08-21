@@ -13,9 +13,9 @@
     /// </summary>
     public partial class SensorsPage : Page
     {
-        private App app;
-
         public ObservableCollection<IBLEAccelerationSensor> Sensors;
+
+        private App app;
 
         public SensorsPage(App app)
         {

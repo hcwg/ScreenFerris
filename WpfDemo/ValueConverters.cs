@@ -14,7 +14,7 @@
             Vector3? v = value as Vector3?;
             if (v.HasValue)
             {
-                return String.Format("x = {0:0.0000}, y = {1:0.0000}, z = {2:0.0000}", v.Value.X, v.Value.Y, v.Value.Z);
+                return string.Format("x = {0:0.0000}, y = {1:0.0000}, z = {2:0.0000}", v.Value.X, v.Value.Y, v.Value.Z);
             }
 
             return string.Empty;
@@ -34,12 +34,12 @@
             if (value is float)
             {
                 float? rad = value as float?;
-                return String.Format("{0:0.000}", rad.Value / 2 / Math.PI * 360);
+                return string.Format("{0:0.000}", rad.Value / 2 / Math.PI * 360);
             }
             else if (value is double)
             {
                 double? rad = value as double?;
-                return String.Format("{0:0.000}", rad.Value / 2 / Math.PI * 360);
+                return string.Format("{0:0.000}", rad.Value / 2 / Math.PI * 360);
             }
 
             return string.Empty;
@@ -55,7 +55,6 @@
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-
             if (value is BLESensorConnectionStatus)
             {
                 BLESensorConnectionStatus? status = value as BLESensorConnectionStatus?;

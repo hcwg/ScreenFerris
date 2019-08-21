@@ -17,6 +17,8 @@
             this.DeviceInformation = deviceInfoIn;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public DeviceInformation DeviceInformation { get; private set; }
 
         public string DeviceId => this.DeviceInformation.Id;
@@ -25,13 +27,11 @@
 
         public string DeviceMAC => (string)this.DeviceInformation.Properties["System.Devices.Aep.DeviceAddress"];
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public void Update(DeviceInformationUpdate deviceInfoUpdate)
         {
-            Debug.WriteLine(String.Format("Before update: {0}", this.DeviceInformation.Name));
+            Debug.WriteLine(string.Format("Before update: {0}", this.DeviceInformation.Name));
             this.DeviceInformation.Update(deviceInfoUpdate);
-            Debug.WriteLine(String.Format("After update: {0}", this.DeviceInformation.Name));
+            Debug.WriteLine(string.Format("After update: {0}", this.DeviceInformation.Name));
 
             this.OnPropertyChanged("Name");
             this.OnPropertyChanged("DeviceInformation");
@@ -51,9 +51,6 @@
         private DeviceWatcher deviceWatcher;
         private App app;
         private Window window;
-        // SFConfigStore configStore;
-
-        public ObservableCollection<ScanDeviceInfo> DeviceCollection { get; set; }
 
         public AddSensorPage(App app, Window window)
         {
@@ -62,6 +59,8 @@
             this.DeviceCollection = new ObservableCollection<ScanDeviceInfo>();
             this.InitializeComponent();
         }
+
+        public ObservableCollection<ScanDeviceInfo> DeviceCollection { get; set; }
 
         public void StartScan()
         {
@@ -108,7 +107,7 @@
 
         private void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation deviceInfo)
         {
-            Debug.WriteLine(String.Format("Added {0}{1}", deviceInfo.Id, deviceInfo.Name));
+            Debug.WriteLine(string.Format("Added {0}{1}", deviceInfo.Id, deviceInfo.Name));
             if (sender != this.deviceWatcher) { return; }
             this.window.Dispatcher.Invoke(() =>
             {
@@ -119,7 +118,7 @@
         private void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
         {
             if (sender != this.deviceWatcher) { return; }
-            Debug.WriteLine(String.Format("Added {0}{1}", deviceInfoUpdate.Id, deviceInfoUpdate.Properties));
+            Debug.WriteLine(string.Format("Added {0}{1}", deviceInfoUpdate.Id, deviceInfoUpdate.Properties));
 
             ScanDeviceInfo dev = this.FindDeviceInfoById(deviceInfoUpdate.Id);
             if (dev == null) { return; }
@@ -142,12 +141,10 @@
 
         private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object e)
         {
-
         }
 
         private void DeviceWatcher_Stopped(DeviceWatcher sender, object e)
         {
-
         }
 
         private ScanDeviceInfo FindDeviceInfoById(string id)

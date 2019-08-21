@@ -8,6 +8,8 @@
         private bool enabled;
         private bool isActive;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Shortcut
         {
             get => this.shortcut;
@@ -48,7 +50,5 @@
                 }
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

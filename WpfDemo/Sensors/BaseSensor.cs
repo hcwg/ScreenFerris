@@ -37,12 +37,10 @@
         protected Orientations? orientation;
         protected bool connected;
 
-        //
+        // AutoConnecting
         protected bool shouldAutoConnectContinue;
 
-        BLESensorConnectionStatus connectionStatus;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        protected BLESensorConnectionStatus connectionStatus;
 
         public BaseSensor(string deviceId, string deviceName)
         {
@@ -59,6 +57,8 @@
             this.connectionStatus = BLESensorConnectionStatus.NotConnected;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public virtual Guid ServiceUuid { get; } = new Guid("00000000-f92a-ad93-dc47-9c4df7aa5e9e");
 
         public virtual Guid AccelerationCharacteristicUuid { get; } = new Guid("00006050-f92a-ad93-dc47-9c4df7aa5e9e");
@@ -69,9 +69,12 @@
             set
             {
                 this.baseline = value;
-                if (this.baseline.HasValue && this.baseline.Value.Length() > 0) { this.baseline /= this.baseline.Value.Length(); }
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Baseline"));
+                if (this.baseline.HasValue && this.baseline.Value.Length() > 0)
+                {
+                    this.baseline /= this.baseline.Value.Length();
+                }
 
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Baseline"));
             }
         }
 
@@ -81,9 +84,12 @@
             set
             {
                 this.normal = value;
-                if (this.normal.HasValue && this.normal.Value.Length() > 0) { this.normal /= this.normal.Value.Length(); }
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Normal"));
+                if (this.normal.HasValue && this.normal.Value.Length() > 0)
+                {
+                    this.normal /= this.normal.Value.Length();
+                }
 
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Normal"));
             }
         }
 
@@ -101,7 +107,6 @@
             {
                 this.deviceName = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DeviceName"));
-
             }
         }
 
@@ -110,7 +115,11 @@
             get => this.autoConnect;
             set
             {
-                if (value == this.autoConnect) { return; }
+                if (value == this.autoConnect)
+                {
+                    return;
+                }
+
                 if (value == true)
                 {
                     this.EnableAutoConnect();
@@ -118,13 +127,14 @@
                 else
                 {
                     this.DisableAutoConnect();
-
                 }
 
                 bool changed = value != this.autoConnect;
                 this.autoConnect = value;
-                if (changed) { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect")); }
-
+                if (changed)
+                {
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect"));
+                }
             }
         }
 
@@ -181,7 +191,10 @@
             {
                 bool changed = value != this.connectionStatus;
                 this.connectionStatus = value;
-                if (changed) { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionStatus")); }
+                if (changed)
+                {
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ConnectionStatus"));
+                }
             }
         }
 
@@ -200,14 +213,18 @@
             }
         }
 
+        public void Disconnect()
+        {
+            this.AutoConnect = false;
+            this.CleanUpSubscription();
+        }
 
-        #region logic code
-        protected void bluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
+        protected void BluetoothLeDeviceConnectionStatusChanged(BluetoothLEDevice sender, object e)
         {
             if (sender.ConnectionStatus == BluetoothConnectionStatus.Disconnected)
             {
                 this.Connected = false;
-                sender.ConnectionStatusChanged -= this.bluetoothLeDeviceConnectionStatusChanged;
+                sender.ConnectionStatusChanged -= this.BluetoothLeDeviceConnectionStatusChanged;
             }
         }
 
@@ -217,7 +234,7 @@
             if (this.bluetoothLEDevice == null)
             {
                 this.bluetoothLEDevice = await BluetoothLEDevice.FromIdAsync(this.deviceId);
-                this.bluetoothLEDevice.ConnectionStatusChanged += this.bluetoothLeDeviceConnectionStatusChanged;
+                this.bluetoothLEDevice.ConnectionStatusChanged += this.BluetoothLeDeviceConnectionStatusChanged;
             }
 
             GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.ServiceUuid);
@@ -308,10 +325,9 @@
             this.subscribedCharacteristic.ValueChanged += this.Characteristic_ValueChanged;
 
             return true;
-
         }
 
-        private void MonitorBindingPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected void MonitorBindingPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BindMonitor"));
         }
@@ -325,7 +341,7 @@
             CryptographicBuffer.CopyToByteArray(args.CharacteristicValue, out data);
             if (System.BitConverter.IsLittleEndian)
             {
-                for (int i = 0; i < 6; i += 2)
+                for (int i = 0; i < data.Length; i += 2)
                 {
                     byte t = data[i];
                     data[i] = data[i + 1];
@@ -345,7 +361,11 @@
 
         protected void OnNewAcceleration(Vector3 acceleration)
         {
-            if (acceleration.Length() == 0) { return; }
+            if (acceleration.Length() == 0)
+            {
+                return;
+            }
+
             Vector3 v = acceleration;
             Vector3? right = null;
             if (this.normal.HasValue && this.baseline.HasValue)
@@ -411,12 +431,11 @@
                 this.acceleration = acceleration;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Acceleration"));
             }
-
         }
 
-        protected async void autoConnectWorkerAsync()
+        protected async void AutoConnectWorkerAsync()
         {
-            Debug.WriteLine(String.Format("Enabling atuoconnect on {0}", this.deviceId));
+            Debug.WriteLine(string.Format("Enabling atuoconnect on {0}", this.deviceId));
             while (this.shouldAutoConnectContinue)
             {
                 var timeoutDeadline = DateTime.Now - new TimeSpan(hours: 0, minutes: 0, seconds: 30);
@@ -435,7 +454,6 @@
                         {
                             this.Connected = true;
                             this.lastConnected = DateTime.Now;
-
                         }
                     }
                     catch (Exception e)
@@ -456,7 +474,7 @@
         protected void EnableAutoConnect()
         {
             this.shouldAutoConnectContinue = true;
-            this.autoConnectTask = Task.Run(() => this.autoConnectWorkerAsync());
+            this.autoConnectTask = Task.Run(() => this.AutoConnectWorkerAsync());
         }
 
         protected void DisableAutoConnect()
@@ -465,7 +483,6 @@
             {
                 this.shouldAutoConnectContinue = false;
             }
-
         }
 
         protected void CleanUpSubscription()
@@ -501,12 +518,5 @@
                 this.bluetoothLEDevice = null;
             }
         }
-
-        public void Disconnect()
-        {
-            this.AutoConnect = false;
-            this.CleanUpSubscription();
-        }
-        #endregion
     }
 }

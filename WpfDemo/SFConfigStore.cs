@@ -8,7 +8,32 @@
 
     public class SFConfigStore : INotifyPropertyChanged
     {
-        public SFSettings settings;
+        public SFSettings Settings;
+
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            // ContractResolver = new SettingsReaderContractResolver(),
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
+
+        private readonly string configurFilePath;
+        private bool modified;
+
+        public SFConfigStore(string configurFilePath = null)
+        {
+            if (configurFilePath == null)
+            {
+                configurFilePath = "SFSettings.json";
+            }
+
+            this.configurFilePath = configurFilePath;
+            this.Settings = this.Load(this.configurFilePath) as SFSettings;
+            this.Modified = false;
+            this.SettingsSanityCheck();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Modified
         {
@@ -22,41 +47,27 @@
             }
         }
 
-        private readonly string configurFilePath;
-        private bool modified;
-
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        public string Serialize()
         {
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-            // ContractResolver = new SettingsReaderContractResolver(),
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        };
+            return JsonConvert.SerializeObject(this.Settings, Formatting.Indented);
+        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public SFConfigStore(String configurFilePath = null)
+        public void Save()
         {
-            if (configurFilePath == null)
-            {
-                configurFilePath = "SFSettings.json";
-            }
-
-            this.configurFilePath = configurFilePath;
-            this.settings = this.Load(this.configurFilePath) as SFSettings;
+            File.WriteAllText(this.configurFilePath, this.Serialize());
             this.Modified = false;
-            this.SettingsSanityCheck();
         }
 
         private void SettingsSanityCheck()
         {
-            if (this.settings == null)
+            if (this.Settings == null)
             {
-                this.settings = new SFSettings();
+                this.Settings = new SFSettings();
             }
 
-            if (this.settings.sensors == null)
+            if (this.Settings.sensors == null)
             {
-                this.settings.sensors = new List<BLEGravitySensorConfig>();
+                this.Settings.sensors = new List<BLEGravitySensorConfig>();
             }
         }
 
@@ -70,17 +81,5 @@
             string jsonFile = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject(jsonFile, typeof(SFSettings), JsonSerializerSettings);
         }
-
-        public string Serialize()
-        {
-            return JsonConvert.SerializeObject(this.settings, Formatting.Indented);
-        }
-
-        public void Save()
-        {
-            File.WriteAllText(this.configurFilePath, this.Serialize());
-            this.Modified = false;
-        }
-
     }
 }

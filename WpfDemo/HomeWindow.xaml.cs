@@ -19,6 +19,11 @@
             this.AddSensorFrame.Content = new AddSensorPage(app, this);
             this.btnSave.DataContext = app;
         }
+        protected override void OnClosed(EventArgs e)
+        {
+            this.app.SetHomeWindowNull();
+            base.OnClosed(e);
+        }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -29,12 +34,5 @@
         {
             this.app.Shutdown();
         }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            this.app.SetHomeWindowNull();
-            base.OnClosed(e);
-        }
-
     }
 }

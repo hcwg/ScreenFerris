@@ -13,20 +13,6 @@ namespace WpfDemo
     /// </summary>
     public partial class App : Application, INotifyPropertyChanged
     {
-
-        public SensorsPage mainWindow { get; private set; }
-
-        public AddSensorPage discoverSensorsWindow { get; private set; }
-
-        public bool ConfigModified { get => this.configStore.Modified; }
-
-        public ObservableCollection<IBLEAccelerationSensor> Sensors
-        {
-            get { return this.bleSensors; }
-        }
-
-        private ObservableCollection<IBLEAccelerationSensor> bleSensors;
-
         private Dictionary<string, IBLEAccelerationSensor> bleSensorsDict;
 
         private SFConfigStore configStore;
@@ -34,11 +20,40 @@ namespace WpfDemo
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private HomeWindow homeWindow;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public App()
         {
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public ObservableCollection<IBLEAccelerationSensor> Sensors { get; private set; }
+
+        public bool ConfigModified { get => this.configStore.Modified; }
+
+        public IBLEAccelerationSensor GetSensorById(string deviceId)
+        {
+            return this.bleSensorsDict[deviceId];
+        }
+
+        public void SaveSettings()
+        {
+            this.configStore.Save();
+        }
+
+        public void ShowHomeWindow()
+        {
+            if (this.homeWindow == null)
+            {
+                this.homeWindow = new HomeWindow(this);
+            }
+
+            this.homeWindow.Show();
+        }
+
+        public void SetHomeWindowNull()
+        {
+            this.homeWindow = null;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -50,8 +65,8 @@ namespace WpfDemo
 
             // init sensors
             this.bleSensorsDict = new Dictionary<string, IBLEAccelerationSensor>();
-            this.bleSensors = new ObservableCollection<IBLEAccelerationSensor>();
-            foreach (BLEGravitySensorConfig sensorConfig in this.configStore.settings.sensors)
+            this.Sensors = new ObservableCollection<IBLEAccelerationSensor>();
+            foreach (BLEGravitySensorConfig sensorConfig in this.configStore.Settings.sensors)
             {
                 var sensor = SensorFactory.GetNewSensor(sensorConfig.Id, sensorConfig.Name, sensorConfig.ModelName);
                 sensor.Baseline = sensorConfig.Baseline;
@@ -65,15 +80,17 @@ namespace WpfDemo
                 };
 
                 this.bleSensorsDict[sensorConfig.Id] = sensor;
-                this.bleSensors.Add(sensor);
+                this.Sensors.Add(sensor);
             }
 
-            this.Sensors.CollectionChanged += this.sensorCollectionChanged;
+            this.Sensors.CollectionChanged += this.SensorCollectionChanged;
 
             // init tray icon
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
-            this.notifyIcon.Icon = WpfDemo.Properties.Resources.ScreenFerrisIcon;
-            this.notifyIcon.Visible = true;
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon
+            {
+                Icon = WpfDemo.Properties.Resources.ScreenFerrisIcon,
+                Visible = true,
+            };
             this.notifyIcon.DoubleClick += (sender, args) =>
             {
                 this.ShowHomeWindow();
@@ -81,9 +98,7 @@ namespace WpfDemo
             this.notifyIcon.ContextMenu = this.GetContextMenu();
 
             // init windows
-            HomeWindow homeWindow = new HomeWindow(this);
-            homeWindow.Show();
-
+            this.ShowHomeWindow();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -91,12 +106,7 @@ namespace WpfDemo
             this.notifyIcon.Visible = false;
         }
 
-        public IBLEAccelerationSensor GetSensorById(string deviceId)
-        {
-            return this.bleSensorsDict[deviceId];
-        }
-
-        private void sensorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void SensorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -105,7 +115,7 @@ namespace WpfDemo
                     this.bleSensorsDict.Remove((item as IBLEAccelerationSensor).DeviceId);
                 }
 
-                this.configStore.settings.sensors.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+                this.configStore.Settings.sensors.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
             }
             else if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -128,11 +138,9 @@ namespace WpfDemo
                     {
                         this.SyncSensorProperty(sensor, sensorConfig, ev.PropertyName);
                     };
-
                 }
 
-                this.configStore.settings.sensors.InsertRange(e.NewStartingIndex, newSensorConfigs);
-
+                this.configStore.Settings.sensors.InsertRange(e.NewStartingIndex, newSensorConfigs);
             }
             else
             {
@@ -140,12 +148,10 @@ namespace WpfDemo
             }
 
             this.configStore.Modified = true;
-
         }
 
         private void SensorPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-
         }
 
         private void ConfigStorePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -196,33 +202,12 @@ namespace WpfDemo
                         isConfigProperty = false;
                         break;
                     }
-
             }
 
             if (isConfigProperty)
             {
                 this.configStore.Modified = true;
             }
-        }
-
-        public void SaveSettings()
-        {
-            this.configStore.Save();
-        }
-
-        public void ShowHomeWindow()
-        {
-            if (this.homeWindow == null)
-            {
-                this.homeWindow = new HomeWindow(this);
-            }
-
-            this.homeWindow.Show();
-        }
-
-        public void SetHomeWindowNull()
-        {
-            this.homeWindow = null;
         }
 
         private System.Windows.Forms.ContextMenu GetContextMenu()

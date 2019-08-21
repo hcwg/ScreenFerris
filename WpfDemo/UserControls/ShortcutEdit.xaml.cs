@@ -12,8 +12,8 @@
     /// </summary>
     public partial class ShortcutEdit : UserControl
     {
-        ShortcutBinding binding;
-        HashSet<Key> keys;
+        private readonly HashSet<Key> keys; 
+        private ShortcutBinding binding;
 
         public ShortcutEdit()
         {
@@ -22,19 +22,7 @@
             this.keys = new HashSet<Key>();
         }
 
-        private void TxtShortcut_KeyDown(object sender, KeyEventArgs e)
-        {
-            this.keys.Add(e.Key);
-            this.txtShortcut.Text = TransformSetToText(this.keys);
-        }
-
-        private void TxtShortcut_KeyUp(object sender, KeyEventArgs e)
-        {
-            // keys.Remove(e.Key);
-            // txtShortcut.Text = TransformSetToText(keys);
-        }
-
-        static public string TransformSetToText(HashSet<Key> keys)
+        public static string TransformSetToText(HashSet<Key> keys)
         {
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var key in keys)
@@ -58,6 +46,20 @@
             }
 
             return stringBuilder.ToString();
+        }
+
+
+
+        private void TxtShortcut_KeyDown(object sender, KeyEventArgs e)
+        {
+            this.keys.Add(e.Key);
+            this.txtShortcut.Text = TransformSetToText(this.keys);
+        }
+
+        private void TxtShortcut_KeyUp(object sender, KeyEventArgs e)
+        {
+            // keys.Remove(e.Key);
+            // txtShortcut.Text = TransformSetToText(keys);
         }
 
         private void TxtBlockShortcut_MouseDoubleClick(object sender, MouseButtonEventArgs e)

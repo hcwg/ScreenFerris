@@ -10,7 +10,7 @@
     /// </summary>
     public partial class SensorControl : UserControl
     {
-        IBLEAccelerationSensor sensor;
+        private IBLEAccelerationSensor sensor;
         private ObservableCollection<string> monitorDeviceNames = new ObservableCollection<string>();
 
         public SensorControl(IBLEAccelerationSensor sensor)

@@ -10,7 +10,7 @@
     /// </summary>
     public partial class ManualPage : Page
     {
-        public ObservableCollection<string> deviceListFound = new ObservableCollection<string>();
+        private ObservableCollection<string> deviceListFound = new ObservableCollection<string>();
 
         public ManualPage()
         {
@@ -28,12 +28,12 @@
         {
             if (e.AddedItems.Count == 0) { return; }
             string monitorString = (string)e.AddedItems[0];
+
             // Save it
         }
 
         private void hotkeyChangeForRight(object sender, DataGridViewRowDividerDoubleClickEventArgs e)
         {
-
         }
     }
 }
