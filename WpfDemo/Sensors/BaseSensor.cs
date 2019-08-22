@@ -39,6 +39,8 @@
 
         // AutoConnecting
         protected bool shouldAutoConnectContinue;
+        protected CancellationTokenSource autoConnectCancelSource;
+        protected CancellationTokenSource connectCancelSource;
 
         protected BLESensorConnectionStatus connectionStatus;
 
@@ -129,12 +131,8 @@
                     this.DisableAutoConnect();
                 }
 
-                bool changed = value != this.autoConnect;
                 this.autoConnect = value;
-                if (changed)
-                {
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect"));
-                }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AutoConnect"));
             }
         }
 
@@ -233,7 +231,7 @@
             }
         }
 
-        protected async Task<bool> ConnectToSensor()
+        protected async Task<bool> ConnectToSensorAsync()
         {
             this.StatusMessage = "Connecting" + this.DeviceId;
             if (this.bluetoothLEDevice == null)
@@ -242,10 +240,10 @@
                 this.bluetoothLEDevice.ConnectionStatusChanged += this.BluetoothLeDeviceConnectionStatusChanged;
             }
 
-            GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.ServiceUuid);
+            GattDeviceServicesResult servicesResult = await this.bluetoothLEDevice.GetGattServicesForUuidAsync(this.ServiceUuid, BluetoothCacheMode.Uncached);
             if (servicesResult.Status != GattCommunicationStatus.Success)
             {
-                this.StatusMessage = "GetGattServicesAsync Error:" + servicesResult.ProtocolError.ToString();
+                this.StatusMessage = "GetGattServicesAsync Error:" + servicesResult.Status + "," + servicesResult.ProtocolError.ToString();
                 return false;
             }
 
@@ -452,7 +450,8 @@
                 if (!this.Connected)
                 {
                     this.ConnectionStatus = BLESensorConnectionStatus.Connecting;
-                    var task = this.ConnectToSensor();
+                    this.connectCancelSource = new CancellationTokenSource();
+                    var task = Task.Run(() => this.ConnectToSensorAsync(), this.connectCancelSource.Token);
                     try
                     {
                         if (await task)
@@ -464,6 +463,11 @@
                     catch (Exception e)
                     {
                         this.StatusMessage = "Connection Error:" + e.Message;
+                    }
+                    finally
+                    {
+                        this.connectCancelSource?.Cancel();
+                        this.connectCancelSource = null;
                     }
 
                     if (!this.Connected)
@@ -478,14 +482,22 @@
 
         protected void EnableAutoConnect()
         {
+            if (this.autoConnectTask != null)
+            {
+                return;
+            }
+
+            this.autoConnectCancelSource = new CancellationTokenSource();
             this.shouldAutoConnectContinue = true;
-            this.autoConnectTask = Task.Run(() => this.AutoConnectWorkerAsync());
+            this.autoConnectTask = Task.Run(() => this.AutoConnectWorkerAsync(), this.autoConnectCancelSource.Token);
         }
 
         protected void DisableAutoConnect()
         {
             if (this.autoConnectTask != null)
             {
+                this.connectCancelSource?.Cancel();
+                this.autoConnectCancelSource?.Cancel();
                 this.shouldAutoConnectContinue = false;
             }
         }
